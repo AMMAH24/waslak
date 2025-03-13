@@ -25,12 +25,14 @@
         h1, h2, h3 {
             font-weight: 700;
         }
-
-        p strong {
-            font-weight: 400;
-            font-size: 18px;
+        .x {
             direction: ltr;
             unicode-bidi: bidi-override;
+        }
+
+        p {
+            font-weight: 400;
+            font-size: 18px;
         }
 
         /* Container */
@@ -81,7 +83,7 @@
     <div class="container">
         <h2>إتمام عملية الشراء</h2>
         <p>للدفع عبر <b>بنكيلي</b>، يرجى تحويل المبلغ إلى:</p>
-        <p dir="ltr"><strong>20 20 12 33</strong></p>
+        <p dir="ltr"><strong class="x">20 20 12 33</strong></p>
 
 
         <p>بعد التحويل، اضغط على الزر أدناه لإرسال إثبات الدفع عبر واتساب:</p>
