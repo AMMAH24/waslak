@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ar">
-
 <head>
     <meta property="og:title" content="وَصْلَكْ - أفضل منصة للكتب الرقمية">
     <meta property="og:description" content="احصل على أفضل الكتب الرقمية بسهولة وسرعة.">
@@ -14,39 +13,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>وَصْلَكْ - كتب رقمية</title>
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap" rel="stylesheet">
-
+    
     <style>
-        /* General Styles */
+        /* عام */
         body {
-            font-family: 'Cairo', sans-serif !important;
+            font-family: 'Cairo', sans-serif;
             text-align: center;
             background-color: #f4f4f4;
             margin: 0;
             padding: 20px;
         }
 
-        h1, h2, h3 {
-            font-weight: 700;
+        /* الهيدر (Navbar) */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background:#3352ff;
+            padding: 15px 20px;
+            color: white;
+        }
+        .navbar img {
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+            object-fit: cover; /* لضبط الصورة داخل الدائرة */
+        }
+        .navbar .menu a {
+            color: white;
+            text-decoration: none;
+            margin-left: 10px;
+            font-size: 14px;
+            font-weight: bold;
         }
 
-        p {
-            font-weight: 400;
-            font-size: 18px;
-        }
-
-        /* Container */
+        /* الحاوية الرئيسية */
         .container {
             max-width: 900px;
             margin: auto;
             padding: 10px;
         }
 
-        /* Books Grid */
+        /* شبكة الكتب */
         .books-grid {
             display: flex;
             flex-wrap: wrap;
@@ -55,7 +67,7 @@
             margin-top: 20px;
         }
 
-        /* Book Card */
+        /* تصميم الكارد */
         .book-card {
             background: white;
             padding: 15px;
@@ -64,19 +76,24 @@
             text-align: center;
             width: 100%;
             max-width: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 500px; /* توحيد الارتفاع */
         }
 
         .book-card img {
             max-width: 100%;
             border-radius: 10px;
-            height: 250px;
+            height: 150px;
             object-fit: cover;
+            height: 30%;
         }
 
         .book-title {
             font-size: 18px;
             font-weight: bold;
-            margin: 10px 0;
+            margin: 5px 0;
         }
 
         .book-price {
@@ -87,33 +104,41 @@
 
         .book-description {
             font-size: 14px;
-            font-weight: normal;
-            margin: 10px 0;
+            flex-grow: 1; /* يملأ المساحة المتاحة */
+            overflow-y: auto; /* يسمح بالتمرير عند الحاجة */
+            max-height: 80px; /* يمنع تمدد النص أكثر من اللازم */
+            padding: 5px;
         }
 
-        /* Buy Button */
+        /* زر الشراء */
         .buy-btn {
             display: block;
             padding: 12px;
-            background: #007BFF;
+            background: #0056b3;
             color: white;
             text-decoration: none;
+            font-weight: bold;
             border-radius: 5px;
             font-size: 16px;
+            margin-top: 10px;
             transition: background 0.3s;
         }
-
         .buy-btn:hover {
-            background: #0056b3;
+            background: #33deff;
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                width: 100%;
-                padding: 15px;
-            }
+        /* Footer */
+        .footer {
+            background: #3352ff;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 40px;
+            font-size: 12px;
+        }
 
+        /* تصميم متجاوب */
+        @media (max-width: 768px) {
             .books-grid {
                 flex-direction: column;
                 align-items: center;
@@ -127,12 +152,35 @@
                 font-size: 14px;
                 padding: 10px;
             }
+
+            .navbar {
+                flex-direction: row;
+                text-align: center;
+                font-size: 12px;
+            }
+
+            .navbar .menu {
+                margin-top: 10px;
+            }
         }
     </style>
 </head>
 
 <body>
 
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo" >
+            <img src="images/waslak.jpg" alt="logo" width="40px" height="40px">
+        </div>
+        <div class="menu">
+            <a href="#">الرئيسية</a>
+            <a href="#">الكتب</a>
+            <a href="https://wa.me/+22220201233" target="_blank">اتصل بنا</a>
+        </div>
+    </div>
+
+    <!-- المحتوى -->
     <div class="container">
         <h1>📚 متجر وَصْلَكْ للكتب الرقمية</h1>
         <p>اختر الكتاب الذي تريد شراءه</p>
@@ -147,19 +195,53 @@
                 </p>
                 <a href="purchase.html?book=1" class="buy-btn">شراء الآن</a>
             </div>
+
             <div class="book-card">
                 <img src="images/book_2.jpeg" alt="loading">
                 <p class="book-title">Linux Basics For Hackers</p>
                 <p class="book-price">500 MRU</p>
                 <p class="book-description">
-                    هو دليل مبتدئ لاستخدام لينكس في مجال الأمن السيبراني واختبار الاختراق. يغطي الأوامر الأساسية في لينكس، والتنقل داخل نظام الملفات، والشبكات، والبرمجة النصية، وأدوات الأمان، مما يساعد الهاكرز الأخلاقيين وهواة الأمن السيبراني على بناء أساس قوي في الاختراق الأخلاقي والتحليل الجنائي الرقمي
+                    دليل لاستخدام لينكس في الأمن السيبراني واختبار الاختراق. يغطي الأوامر الأساسية في لينكس، والتنقل داخل نظام الملفات، والشبكات، وأدوات الأمان، مما يساعد الهاكرز الأخلاقيين على بناء أساس قوي.
                 </p>
                 <a href="purchase.html?book=2" class="buy-btn">شراء الآن</a>
             </div>
-            
+
+            <div class="book-card">
+                <img src="images/book_2.jpeg" alt="loading">
+                <p class="book-title">Linux Basics For Hackers</p>
+                <p class="book-price">500 MRU</p>
+                <p class="book-description">
+                    دليل لاستخدام لينكس في الأمن السيبراني واختبار الاختراق. يغطي الأوامر الأساسية في لينكس، والتنقل داخل نظام الملفات، والشبكات، وأدوات الأمان، مما يساعد الهاكرز الأخلاقيين على بناء أساس قوي.
+                </p>
+                <a href="purchase.html?book=2" class="buy-btn">شراء الآن</a>
+            </div>
+
+            <div class="book-card">
+                <img src="images/book_2.jpeg" alt="loading">
+                <p class="book-title">Linux Basics For Hackers</p>
+                <p class="book-price">500 MRU</p>
+                <p class="book-description">
+                    دليل لاستخدام لينكس في الأمن السيبراني واختبار الاختراق. يغطي الأوامر الأساسية في لينكس، والتنقل داخل نظام الملفات، والشبكات، وأدوات الأمان، مما يساعد الهاكرز الأخلاقيين على بناء أساس قوي.
+                </p>
+                <a href="purchase.html?book=2" class="buy-btn">شراء الآن</a>
+            </div>
+
+            <div class="book-card">
+                <img src="images/book_2.jpeg" alt="loading">
+                <p class="book-title">Linux Basics For Hackers</p>
+                <p class="book-price">500 MRU</p>
+                <p class="book-description">
+                    دليل لاستخدام لينكس في الأمن السيبراني واختبار الاختراق. يغطي الأوامر الأساسية في لينكس، والتنقل داخل نظام الملفات، والشبكات، وأدوات الأمان، مما يساعد الهاكرز الأخلاقيين على بناء أساس قوي.
+                </p>
+                <a href="purchase.html?book=2" class="buy-btn">شراء الآن</a>
+            </div>
         </div>
     </div>
 
-</body>
+    <!-- Footer -->
+    <div class="footer">
+        &copy; 2025 متجر وَصْلَكْ - جميع الحقوق محفوظة
+    </div>
 
+</body>
 </html>
