@@ -4,8 +4,8 @@
     <meta property="og:title" content="وَصْلَكْ - أفضل منصة للكتب الرقمية">
     <meta property="og:description" content="احصل على أفضل الكتب الرقمية بسهولة وسرعة.">
     <meta property="og:image" content="https://ammah24.github.io/waslak/waslak.jpg">
-    <meta property="og:image:width content="1200">
-    <meta property="og:image:height content="630">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:url" content="https://ammah24.github.io/waslak/">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
@@ -30,7 +30,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background:#0056b3;
+            background: #0056b3;
             padding: 15px 20px;
             color: white;
         }
@@ -129,7 +129,7 @@
 
         /* Footer */
         .footer {
-            background: #0056b3;
+            background:  #0056b3;
             color: white;
             text-align: center;
             padding: 10px;
@@ -143,7 +143,7 @@
                 flex-direction: column;
                 align-items: center;
             }
-
+            
             .book-card {
                 width: 90%;
             }
@@ -174,36 +174,216 @@
             <img src="images/waslak.jpg" alt="logo" width="40px" height="40px">
         </div>
         <div class="menu">
-            <a href="#">الرئيسية</a>
-            <a href="#">الكتب</a>
+            <a href="#" onclick="showHome()">الرئيسية</a>
+            <a href="#" onclick="showBooks()">الكتب</a>
             <a href="https://wa.me/+22220201233" target="_blank">اتصل بنا</a>
         </div>
     </div>
 
     <!-- المحتوى -->
     <div class="container">
-        <h1>📚 متجر وَصْلَكْ للكتب الرقمية</h1>
-        <p>اختر الكتاب الذي تريد شراءه</p>
 
-        <div class="books-grid">
-            <div class="book-card">
-                <img src="images/book_1.jpeg" alt="loading">
-                <p class="book-title">الحرية المالية باستراتيجية الميزانية الصفرية</p>
-                <p class="book-price">199 MRU</p>
-                <p class="book-description">
-                    الكتاب يضع لك خارطة طريق للتحكم في أموالك، مهما كان دخلك. بالأوقية التي تكسبها، ستتعلم كيف تخطط لكل واحدة منها بذكاء، تسدد ديونك، وتبني ثروتك خطوة بخطوة.
-                </p>
-                <a href="purchase.html?book=1" class="buy-btn">شراء الآن</a>
+        <!-- Home Section -->
+        <!-- Home Section -->
+        <div id="home-section" >
+            <h1>📚 مرحبًا بك في متجر وَصْلَكْ للكتب الرقمية!</h1>
+            <p>اختر الكتاب الذي ترغب في شراءه من مكتبتنا الرقمية</p>
+
+            <!-- Offer Text and Countdown Timer (OUTSIDE the card) -->
+            <div class="offer-section">
+                <p class="offer-label">🎉 عرض خاص لمدة 24 ساعة فقط! 🎉</p>
+                <p id="timer" class="countdown-timer">ينتهي خلال: 00:00:00</p>
             </div>
+            <div class="books-grid-offer">
+                <div class="book-card-offer">
+                    <!-- Red Ribbon on the Corner -->
+                    <div class="offer-ribbon">خصم خاص</div>
 
-            <div class="book-card">
-                <img src="images/book_2.jpeg" alt="loading">
-                <p class="book-title">Linux Basics For Hackers</p>
-                <p class="book-price">499 MRU</p>
-                <p class="book-description">
-                    دليل لاستخدام لينكس في الأمن السيبراني واختبار الاختراق. يغطي الأوامر الأساسية في لينكس، والتنقل داخل نظام الملفات، والشبكات، وأدوات الأمان، مما يساعد الهاكرز الأخلاقيين على بناء أساس قوي.
-                </p>
-                <a href="purchase.html?book=2" class="buy-btn">شراء الآن</a>
+                    <img src="images/book_1.jpeg" alt="loading">
+                    <p class="book-title">الحرية المالية باستراتيجية الميزانية الصفرية</p>
+
+                    <!-- Price with strikethrough -->
+                    <p class="book-price">
+                        <span class="old-price">199 MRU</span> <span class="new-price">139 MRU</span> 🔥
+                    </p>
+
+                    <p class="book-description-offer">
+                        .الكتاب يضع لك خارطة طريق للتحكم في أموالك، مهما كان دخلك. بالأوقية التي تكسبها، ستتعلم كيف تخطط لكل واحدة منها بذكاء، تسدد ديونك، وتبني ثروتك خطوة بخطوة
+                    </p>
+                    <a href="purchase.html?book=1" class="buy-btn">شراء الآن</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- JavaScript Countdown Timer -->
+        <script>
+            function startCountdown(duration) {
+                let timer = duration, hours, minutes, seconds;
+                const timerElement = document.getElementById("timer");
+
+                setInterval(function () {
+                    hours = Math.floor(timer / 3600);
+                    minutes = Math.floor((timer % 3600) / 60);
+                    seconds = timer % 60;
+
+                    timerElement.textContent = `ينتهي خلال: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                    if (timer > 0) {
+                        timer--;
+                    } else {
+                        timerElement.textContent = "انتهى العرض!";
+                    }
+                }, 1000);
+            }
+
+            // Set countdown for 24 hours (86400 seconds)
+            startCountdown(1500);
+        </script>
+
+        <!-- CSS for Styling -->
+        <style>
+            /* Offer Text and Timer Outside Card */
+            .offer-section {
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            .offer-label {
+                color: red;
+                font-weight: bold;
+                font-size: 18px;
+            }
+            .countdown-timer {
+                font-size: 20px;
+                font-weight: bold;
+                color: #d9534f;
+            }
+            .books-grid-offer{
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 20px;
+                margin-top: 20px;
+            }
+            /* Book Card */
+            .book-card-offer {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                position: relative;
+                background: white;
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                width: 300px;
+               
+                
+            }
+            .book-card-offer img {
+                max-width: 100%;
+                border-radius: 10px;
+                height: 150px;
+                object-fit: cover;
+                height: 30%;
+                /* Red Corner Ribbon */
+            }
+            .offer-ribbon {
+                position: absolute;
+                top: 0;
+                left: 0;
+                background: red;
+                color: white;
+                padding: 5px 15px;
+                font-size: 14px;
+                font-weight: bold;
+                border-top-left-radius: 10px;
+                border-bottom-right-radius: 30px;
+            }
+
+            /* Price Formatting */
+            .book-price {
+                font-size: 18px;
+                font-weight: bold;
+            }
+            .old-price {
+                text-decoration: line-through;
+                color: gray;
+                margin-right: 8px;
+            }
+            .new-price {
+                color: #28a745;
+                font-size: 22px;
+            }
+            .book-description-offer {
+                font-size: 14px;
+                flex-grow: 1; /* يملأ المساحة المتاحة */
+                overflow-y: auto; /* يسمح بالتمرير عند الحاجة */
+                max-height: 80px; /* يمنع تمدد النص أكثر من اللازم */
+                padding: 5px;
+            }
+            /* Buy Button */
+            .buy-btn {
+            display: block;
+            padding: 12px;
+            background: #0056b3;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background 0.3s;
+            }
+            .buy-btn:hover {
+                background: #33deff;
+            }
+        </style>
+
+        <!--
+        <div id="home-section">
+            <h1>📚 مرحبًا بك في متجر وَصْلَكْ للكتب الرقمية!</h1>
+            <p> .اختر الكتاب الذي ترغب في شراءه من مكتبتنا الرقمية</p>
+            <div class="books-grid">
+                <div class="book-card">
+                    <img src="images/book_1.jpeg" alt="loading">
+                    <p class="book-title">الحرية المالية باستراتيجية الميزانية الصفرية</p>
+                    <p class="book-price">200 MRU</p>
+                    <p class="book-description">
+                        .الكتاب يضع لك خارطة طريق للتحكم في أموالك، مهما كان دخلك. بالأوقية التي تكسبها، ستتعلم كيف تخطط لكل واحدة منها بذكاء، تسدد ديونك، وتبني ثروتك خطوة بخطوة
+                    </p>
+                    <a href="purchase.html?book=1" class="buy-btn">شراء الآن</a>
+                </div>
+            </div>
+        </div>
+        -->
+
+        <!-- Books Section -->
+        <div id="books-section" style="display:none;">
+            <h1>📚 متجر وَصْلَكْ للكتب الرقمية</h1>
+            <p> .اختر الكتاب الذي ترغب في شراءه من مكتبتنا الرقمية</p>
+
+            <div class="books-grid">
+                <div class="book-card">
+                    <img src="images/book_1.jpeg" alt="loading">
+                    <p class="book-title">الحرية المالية باستراتيجية الميزانية الصفرية</p>
+                    <p class="book-price">199 MRU</p>
+                    <p class="book-description">
+                        الكتاب يضع لك خارطة طريق للتحكم في أموالك، مهما كان دخلك. بالأوقية التي تكسبها، ستتعلم كيف تخطط لكل واحدة منها بذكاء، تسدد ديونك، وتبني ثروتك خطوة بخطوة.
+                    </p>
+                    <a href="purchase.html?book=1" class="buy-btn">شراء الآن</a>
+                </div>
+
+                <div class="book-card">
+                    <img src="images/book_2.jpeg" alt="loading">
+                    <p class="book-title">Linux Basics For Hackers</p>
+                    <p class="book-price">499 MRU</p>
+                    <p class="book-description">
+                        دليل لاستخدام لينكس في الأمن السيبراني واختبار الاختراق. يغطي الأوامر الأساسية في لينكس، والتنقل داخل نظام الملفات، والشبكات، وأدوات الأمان، مما يساعد الهاكرز الأخلاقيين على بناء أساس قوي.
+                    </p>
+                    <a href="purchase.html?book=2" class="buy-btn">شراء الآن</a>
+                </div>
+
+                <!-- Add more book cards here -->
             </div>
         </div>
     </div>
@@ -212,6 +392,23 @@
     <div class="footer">
         &copy; 2025 متجر وَصْلَكْ - جميع الحقوق محفوظة
     </div>
+
+    <script>
+        // Function to show Home Section
+        function showHome() {
+            document.getElementById('home-section').style.display = 'block';
+            document.getElementById('books-section').style.display = 'none';
+        }
+
+        // Function to show Books Section
+        function showBooks() {
+            document.getElementById('home-section').style.display = 'none';
+            document.getElementById('books-section').style.display = 'block';
+        }
+
+        // Initially show Home section
+        showHome();
+    </script>
 
 </body>
 </html>
