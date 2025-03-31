@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-    <meta property="og:title" content="وَصْلَكْ - أفضل منصة للكتب الرقمية">
-    <meta property="og:description" content="احصل على أفضل الكتب الرقمية بسهولة وسرعة.">
+    <meta property="og:title" content="وَصْلَكْ - منصة للكتب الرقمية و المنتجات المستعملة   و الجديدة">
+    <meta property="og:description" content="احصل على أفضل الكتب الرقمية و المنتجات بسهولة وسرعة.">
     <meta property="og:image" content="https://ammah24.github.io/waslak/waslak.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -205,7 +205,7 @@
 
                     <!-- Price with strikethrough -->
                     <p class="book-price">
-                        <span class="old-price">199 MRU</span> <span class="new-price">139 MRU</span> 🔥
+                        <span class="old-price">199 MRU</span> <span class="new-price">139 أوقية</span> 🔥
                     </p>
 
                     <p class="book-description-offer">
@@ -386,7 +386,7 @@
                 <div class="book-card">
                     <img src="images/book_1.jpeg" alt="loading">
                     <p class="book-title">الحرية المالية باستراتيجية الميزانية الصفرية</p>
-                    <p class="book-price">199 MRU</p>
+                    <p class="book-price">199 أوقية</p>
                     <p class="book-description">
                         الكتاب يضع لك خارطة طريق للتحكم في أموالك، مهما كان دخلك. بالأوقية التي تكسبها، ستتعلم كيف تخطط لكل واحدة منها بذكاء، تسدد ديونك، وتبني ثروتك خطوة بخطوة.
                     </p>
@@ -396,7 +396,7 @@
                 <div class="book-card">
                     <img src="images/book_2.jpeg" alt="loading">
                     <p class="book-title">Linux Basics For Hackers</p>
-                    <p class="book-price">499 MRU</p>
+                    <p class="book-price">499 أوقية</p>
                     <p class="book-description">
                         دليل لاستخدام لينكس في الأمن السيبراني واختبار الاختراق. يغطي الأوامر الأساسية في لينكس، والتنقل داخل نظام الملفات، والشبكات، وأدوات الأمان، مما يساعد الهاكرز الأخلاقيين على بناء أساس قوي.
                     </p>
@@ -415,7 +415,7 @@
                 <div class="book-card">
                     <img src="images/book_1.jpeg" alt="loading">
                     <p class="book-title">منتج جديد ...</p>
-                    <p class="book-price">199 MRU</p>
+                    <p class="book-price">--- أوقية</p>
                     <p class="book-description">
                         وصف المنتج ...
                     </p>
@@ -425,7 +425,7 @@
                 <div class="book-card">
                     <img src="images/book_2.jpeg" alt="loading">
                     <p class="book-title">منتج جديد </p>
-                    <p class="book-price">499 MRU</p>
+                    <p class="book-price">--- أوقية</p>
                     <p class="book-description">
                         وصف منتج جديد
                     </p>
@@ -446,8 +446,6 @@
         // Function to show Home Section
         function showHome() {
             document.getElementById('home-section').style.display = 'block';
-            document.getElementById('books-section').style.display = 'none';
-            document.getElementById('products-section').style.display ='none';
         }
         
         function showProducts() 
@@ -456,9 +454,8 @@
 
         // Function to show Books Section
         function showBooks() {
-            document.getElementById('home-section').style.display = 'none';
             document.getElementById('books-section').style.display = 'block';
-            document.getElementById('products-section').style.display ='none';
+            
         }
 
         // Initially show Home section
