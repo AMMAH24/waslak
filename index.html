@@ -175,9 +175,9 @@
             <img src="images/waslak.jpg" alt="logo" width="40px" height="40px">
         </div>
         <div class="menu">
-            <a href="#home-section" onclick="showHome()">الرئيسية</a>
-            <a href="#books-section" onclick="showBooks()">الكتب</a>
-            <a href="#products-section" onclick="showProducts()">المنتجات</a>
+            <a href="#home-section" onclick="showHome(event)">الرئيسية</a>
+            <a href="#books-section" onclick="showBooks(event)">الكتب</a>
+            <a href="#products-section" onclick="showProducts(event)">المنتجات</a>
             <a href="https://wa.me/+22220201233" target="_blank">اتصل بنا</a>
         </div>
     </div>
@@ -461,27 +461,32 @@
 
     <script>
         // Function to show Home Section
-        function showHome() {
+        function showHome(event) {
+            if (event) event.preventDefault();
             document.getElementById('home-section').style.display = 'block';
             document.getElementById('products-section').style.display ='none';
             document.getElementById('books-section').style.display = 'none';
         }
-
-        function showProducts() {
+        
+        // Function to show Books Section
+        function showBooks(event) {
+            if (event) event.preventDefault();
+            document.getElementById('books-section').style.display = 'block';
+            document.getElementById('home-section').style.display = 'none';
+            document.getElementById('products-section').style.display ='none';
+        }
+        
+        // Function to show Products Section
+        function showProducts(event) {
+            if (event) event.preventDefault();
             document.getElementById('products-section').style.display ='block';
             document.getElementById('home-section').style.display = 'none';
             document.getElementById('books-section').style.display = 'none';
-        }
+}
 
-        // Function to show Books Section
-        function showBooks() {
-            document.getElementById('books-section').style.display = 'block';
-            document.getElementById('home-section').style.display = 'none';
-            document.getElementById('products-section').style.display ='none';    
-        }
+// Initially show Home section
+showHome();
 
-        // Initially show Home section
-        showHome();
     </script>
 
 </body>
