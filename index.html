@@ -390,23 +390,6 @@
             }
         </style>
 
-        <!--
-        <div id="home-section">
-            <h1>📚 مرحبًا بك في متجر وَصْلَكْ للكتب الرقمية!</h1>
-            <p> .اختر الكتاب الذي ترغب في شراءه من مكتبتنا الرقمية</p>
-            <div class="books-grid">
-                <div class="book-card">
-                    <img src="images/book_1.jpeg" alt="loading">
-                    <p class="book-title">الحرية المالية باستراتيجية الميزانية الصفرية</p>
-                    <p class="book-price">200 MRU</p>
-                    <p class="book-description">
-                        .الكتاب يضع لك خارطة طريق للتحكم في أموالك، مهما كان دخلك. بالأوقية التي تكسبها، ستتعلم كيف تخطط لكل واحدة منها بذكاء، تسدد ديونك، وتبني ثروتك خطوة بخطوة
-                    </p>
-                    <a href="purchase.html?book=1" class="buy-btn">شراء الآن</a>
-                </div>
-            </div>
-        </div>
-        -->
 
         <!-- Books Section -->
         <div id="books-section" style="display:none;">
@@ -414,7 +397,7 @@
             <p> .اختر الكتاب الذي ترغب في الحصول عليه من مكتبتنا الرقمية</p>
 
             <div class="books-grid">
-                <div class="book-card" id="1">
+                <div class="book-card">
                     <img src="images/book_1.jpeg" alt="loading" >
                     <p class="book-title">الحرية المالية باستراتيجية الميزانية الصفرية</p>
                     <p class="book-price">199 أوقية</p>
@@ -424,7 +407,7 @@
                     <a href="purchase.html?book=1" class="buy-btn">شراء الآن</a>
                 </div>
 
-                <div class="book-card" id="2">
+                <div class="book-card">
                     <img src="images/book_2.jpeg" alt="loading">
                     <p class="book-title">Linux Basics For Hackers</p>
                     <p class="book-price">499 أوقية</p>
@@ -506,8 +489,7 @@
         function showBooks() {
             document.getElementById('books-section').style.display = 'block';
             document.getElementById('home-section').style.display = 'none';
-            document.getElementById('products-section').style.display ='none';
-            
+            document.getElementById('products-section').style.display ='none';    
         }
 
         // Initially show Home section
