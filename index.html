@@ -14,157 +14,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>وَصْلَكْ</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap" rel="stylesheet">
-   
+    <link rel="stylesheet" href="index.css">
 
-    <style>
-        /* عام */
-        body {
-            font-family: 'Cairo', sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-
-        /* الهيدر (Navbar) */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #0056b3;
-            padding: 15px 20px;
-            color: white;
-        }
-        .navbar img {
-            display: flex;
-            justify-content: center; /* Center horizontally */
-            align-items: center; /* Center vertically */
-            height: 50px;
-            width: 50px;
-            border-radius: 50%;
-            object-fit: cover; /* لضبط الصورة داخل الدائرة */
-        }
-        .navbar .menu a {
-            color: white;
-            text-decoration: none;
-            margin-left: 10px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        /* الحاوية الرئيسية */
-        .container {
-            max-width: 900px;
-            margin: auto;
-            padding: 10px;
-        }
-
-        /* شبكة الكتب */
-        .books-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        /* تصميم الكارد */
-        .book-card {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            text-align: center;
-            width: 100%;
-            max-width: 280px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 500px; /* توحيد الارتفاع */
-        }
-
-        .book-card img {
-            max-width: 100%;
-            border-radius: 10px;
-            height: 150px;
-            object-fit: cover;
-            height: 30%;
-        }
-
-        .book-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin: 5px 0;
-        }
-
-        .book-price {
-            color: #20be1a;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .book-description {
-            font-size: 14px;
-            flex-grow: 1; /* يملأ المساحة المتاحة */
-            overflow-y: auto; /* يسمح بالتمرير عند الحاجة */
-            max-height: 80px; /* يمنع تمدد النص أكثر من اللازم */
-            padding: 5px;
-        }
-
-        /* زر الشراء */
-        .buy-btn {
-            display: block;
-            padding: 12px;
-            background: #0056b3;
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 5px;
-            font-size: 16px;
-            margin-top: 10px;
-            transition: background 0.3s;
-        }
-        .buy-btn:hover {
-            background: #33deff;
-        }
-
-        /* Footer */
-        .footer {
-            background:  #0056b3;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            margin-top: 40px;
-            font-size: 12px;
-        }
-
-        /* تصميم متجاوب */
-        @media (max-width: 768px) {
-            .books-grid {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .book-card {
-                width: 90%;
-            }
-
-            .buy-btn {
-                font-size: 14px;
-                padding: 10px;
-            }
-
-            .navbar {
-                flex-direction: row;
-                text-align: center;
-                font-size: 12px;
-            }
-
-            .navbar .menu {
-                margin-top: 10px;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -232,7 +83,8 @@
                     </p>
                     <a href="purchase.html?book=3" class="buy-btn">شراء الآن</a>
                 </div>
-                <div class="books-grid-offer" id="3">
+            </div>
+            <div class="books-grid-offer" id="3">
                 <div class="book-card-offer">
                     <!-- Red Ribbon on the Corner -->
                     <div class="offer-ribbon">خصم خاص</div>
@@ -278,106 +130,6 @@
             // Set countdown for 24 hours (86400 seconds)
             startCountdown(1500);
         </script>
-
-        <!-- CSS for Styling -->
-        <style>
-            /* Offer Text and Timer Outside Card */
-            .offer-section {
-                text-align: center;
-                margin-bottom: 10px;
-            }
-            .offer-label {
-                color: red;
-                font-weight: bold;
-                font-size: 18px;
-            }
-            .countdown-timer {
-                font-size: 20px;
-                font-weight: bold;
-                color: #d9534f;
-            }
-            .books-grid-offer{
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 20px;
-                margin-top: 20px;
-            }
-            /* Book Card */
-            .book-card-offer {
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                position: relative;
-                background: white;
-                padding: 15px;
-                border-radius: 10px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                text-align: center;
-                width: 300px;
-               
-                
-            }
-            .book-card-offer img {
-                max-width: 100%;
-                border-radius: 10px;
-                height: 150px;
-                object-fit: cover;
-                height: 30%;
-                /* Red Corner Ribbon */
-            }
-            .offer-ribbon {
-                position: absolute;
-                top: 0;
-                left: 0;
-                background: red;
-                color: white;
-                padding: 5px 15px;
-                font-size: 14px;
-                font-weight: bold;
-                border-top-left-radius: 10px;
-                border-bottom-right-radius: 30px;
-            }
-
-            /* Price Formatting */
-            .book-price {
-                font-size: 18px;
-                font-weight: bold;
-            }
-            .old-price {
-                text-decoration: line-through;
-                color: gray;
-                margin-right: 8px;
-            }
-            .new-price {
-                color: #28a745;
-                font-size: 22px;
-            }
-            .book-description-offer {
-                font-size: 14px;
-                flex-grow: 1; /* يملأ المساحة المتاحة */
-                overflow-y: auto; /* يسمح بالتمرير عند الحاجة */
-                max-height: 80px; /* يمنع تمدد النص أكثر من اللازم */
-                padding: 5px;
-            }
-            /* Buy Button */
-            .buy-btn {
-            display: block;
-            padding: 12px;
-            background: #0056b3;
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 5px;
-            font-size: 16px;
-            margin-top: 10px;
-            transition: background 0.3s;
-            }
-            .buy-btn:hover {
-                background: #33deff;
-            }
-        </style>
-
 
         <!-- Books Section -->
         <div id="books-section" style="display:none;">
@@ -482,10 +234,10 @@
             document.getElementById('products-section').style.display ='block';
             document.getElementById('home-section').style.display = 'none';
             document.getElementById('books-section').style.display = 'none';
-}
+        }
 
 // Initially show Home section
-showHome();
+        showHome();
 
     </script>
 
