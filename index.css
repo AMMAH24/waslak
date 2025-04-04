@@ -121,7 +121,7 @@ body {
 
 /* تصميم متجاوب */
 @media (max-width: 768px) {
-    .books-grid {
+    .books-grid books-grid-offer {
         flex-direction: row;
         align-items: center;
     }
