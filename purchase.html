@@ -57,7 +57,15 @@
         .x {
             direction: ltr;
             unicode-bidi: bidi-override;
-            font-weight: "bold"
+            font-weight: "bold";
+            font-size: 20px;
+            border: 5px solid #33deff;
+            background-color: #33deff;
+            border-radius: 5px;
+            padding-left: 10px;
+            padding-right: 10px;
+            color: white;
+            margin-right: 6%;
         }
         .btn:hover {
             background: #1EBE5D;
@@ -71,6 +79,30 @@
             border-radius: 50%;
             object-fit: cover; /* لضبط الصورة داخل الدائرة */
         }
+        .payment-logos {
+        margin-top: 30px ;
+       
+        }
+
+        .logos {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .payment-logo {
+            width: 100px;
+            height: auto;
+            border-radius: 50%;
+            background-color: #33deff;
+        }
+        .payment-logo1 {
+            width: 100px;
+            height: auto;
+            border-radius: 50%;
+            background-color: #33deff;
+        }
         /* Responsive Design */
         @media (max-width: 600px) {
             .container {
@@ -83,22 +115,75 @@
                 padding: 10px 15px;
             }
         }
+        .copy-icon {
+        cursor: pointer;
+        font-size: 50px;
+        margin-right: 0px;
+        color: #007bff;
+        }
+
+        .copy-icon:hover {
+            color: #0056b3;
+        }
     </style>
+    
 </head>
 
 <body>
-
+    
     <div class="container">
         <div class="logo" >
             <img src="images/waslak (1).webp" alt="logo" width="40px" height="40px">
         </div>
         <h2>إتمام عملية الشراء</h2>
         <p>للدفع عبر <b>بنكيلي</b> أو <b>مصرفي</b>، يرجى تحويل المبلغ إلى:</p>
-        <p ><strong class="x">20 20 12 33</strong></p>
-
+        
+        <!--<p ><strong class="x">20 20 12 33</strong></p>-->
+        <p style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <strong id="account-number" class="x">20201233</strong>
+            <span onclick="copyText(this)" title="نسخ" style="cursor: pointer;">
+                <!-- SVG أيقونة النسخ -->
+                <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18" fill="#007bff">
+                    <path d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                </svg>
+            </span>
+        </p>
+        <script>
+            function copyText(element) {
+                const text = document.getElementById("account-number").innerText;
+                navigator.clipboard.writeText(text).then(() => {
+                    // تغيير المحتوى بعد النسخ
+                    element.innerHTML = "✅ تم النسخ";
+            
+                    // إعادة الأيقونة الأصلية بعد 2 ثانية
+                    setTimeout(() => {
+                        element.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18">
+                                <path d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                            </svg>
+                        `;
+                    }, 2000);
+                });
+            }
+        </script>
+        
+        
+          
+          
+        
+         
+        
         <p>بعد التحويل، اضغط على الزر أدناه لإرسال إثبات الدفع عبر واتساب:</p>
 
         <a id="whatsapp-link" href="#" class="btn">تأكيد الدفع</a>
+        <div class="payment-logos">
+            <div class="logos">
+                <img src="images/msrvi_white_250x250.png" alt="مصرفي" class="payment-logo">
+                <img src="images/bkly_white_250x250.png" alt="بنكيلي" class="payment-logo1">
+            </div>
+        </div>
     </div>
 
     <script>
