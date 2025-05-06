@@ -136,7 +136,7 @@
             <img src="images/waslak (1).webp" alt="logo" width="40px" height="40px">
         </div>
         <h2>إتمام عملية الشراء</h2>
-        <p id="payment-text">للدفع عبر <b>بنكيلي</b> أو <b>مصرفي</b>، يرجى تحويل المبلغ إلى:</p>
+        <p>للدفع عبر <b>بنكيلي</b> أو <b>مصرفي</b>، يرجى تحويل المبلغ إلى:</p>
         
         <!--<p ><strong class="x">20 20 12 33</strong></p>-->
         <p style="display: flex; align-items: center; justify-content: center; gap: 8px;">
@@ -150,11 +150,6 @@
             </span>
         </p>
         <script>
-            const price = urlParams.get('price');
-            if (price) {
-                document.getElementById('payment-text').innerHTML = `للدفع عبر <b>بنكيلي</b> أو <b>مصرفي</b>، يرجى تحويل مبلغ <b>${price} أوقية</b> إلى:`;
-            }
-
             function copyText(element) {
                 const text = document.getElementById("account-number").innerText;
                 navigator.clipboard.writeText(text).then(() => {
