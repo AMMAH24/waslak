@@ -1,18 +1,13 @@
 <!DOCTYPE html>
 <html lang="ar">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إتمام الشراء</title>
-
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap" rel="stylesheet">
-
     <style>
-        /* General Styles */
         body {
             font-family: 'Cairo', sans-serif !important;
             text-align: center;
@@ -31,7 +26,6 @@
             font-size: 18px;
         }
 
-        /* Container */
         .container {
             max-width: 500px;
             margin: auto;
@@ -42,7 +36,6 @@
             text-align: center;
         }
 
-        /* Button */
         .btn {
             display: inline-block;
             padding: 12px 20px;
@@ -54,34 +47,35 @@
             font-size: 18px;
             transition: background 0.3s;
         }
+
         .x {
             direction: ltr;
             unicode-bidi: bidi-override;
-            font-weight: "bold";
+            font-weight: bold;
             font-size: 20px;
             border: 5px solid #33deff;
             background-color: #33deff;
             border-radius: 5px;
-            padding-left: 10px;
-            padding-right: 10px;
+            padding: 0 10px;
             color: white;
             margin-right: 6%;
         }
+
         .btn:hover {
             background: #1EBE5D;
         }
+
         .logo img {
-            display: flex;
-            justify-content: center; /* Center horizontally */
-            align-items: center; /* Center vertically */
+            display: block;
+            margin: 0 auto;
             height: 60px;
             width: 60px;
             border-radius: 50%;
-            object-fit: cover; /* لضبط الصورة داخل الدائرة */
+            object-fit: cover;
         }
+
         .payment-logos {
-        margin-top: 30px ;
-       
+            margin-top: 30px;
         }
 
         .logos {
@@ -97,120 +91,100 @@
             border-radius: 50%;
             background-color: #33deff;
         }
-        .payment-logo1 {
-            width: 100px;
-            height: auto;
-            border-radius: 50%;
-            background-color: #33deff;
+
+        #product-price {
+            font-weight: bold;
+            color: #e91e63;
+            margin: 0 5px;
         }
-        /* Responsive Design */
+
+        .copy-icon {
+            cursor: pointer;
+            margin-right: 0px;
+            color: #007bff;
+        }
+
         @media (max-width: 600px) {
             .container {
                 width: 90%;
                 padding: 15px;
             }
-
             .btn {
                 font-size: 16px;
                 padding: 10px 15px;
             }
         }
-        .copy-icon {
-        cursor: pointer;
-        font-size: 50px;
-        margin-right: 0px;
-        color: #007bff;
-        }
-
-        .copy-icon:hover {
-            color: #0056b3;
-        }
     </style>
-    
 </head>
 
 <body>
-    
     <div class="container">
-        <div class="logo" >
+        <div class="logo">
             <img src="images/waslak (1).webp" alt="logo" width="40px" height="40px">
         </div>
         <h2>إتمام عملية الشراء</h2>
-        <p>للدفع عبر <b>بنكيلي</b> أو <b>مصرفي</b>، يرجى تحويل المبلغ<!--price of product--> إلى:</p>
+        <p>للدفع عبر <b>بنكيلي</b> أو <b>مصرفي</b>، يرجى تحويل المبلغ <span id="product-price"></span> إلى:</p>
         
-        <!--<p ><strong class="x">20 20 12 33</strong></p>-->
         <p style="display: flex; align-items: center; justify-content: center; gap: 8px;">
             <strong id="account-number" class="x">20201233</strong>
-            <span onclick="copyText(this)" title="نسخ" style="cursor: pointer;">
-                <!-- SVG أيقونة النسخ -->
+            <span onclick="copyText(this)" title="نسخ" class="copy-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18" fill="#007bff">
                     <path d="M0 0h24v24H0z" fill="none"/>
                     <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
                 </svg>
             </span>
         </p>
-        <script>
-            function copyText(element) {
-                const text = document.getElementById("account-number").innerText;
-                navigator.clipboard.writeText(text).then(() => {
-                    // تغيير المحتوى بعد النسخ
-                    element.innerHTML = "✅ تم النسخ";
-            
-                    // إعادة الأيقونة الأصلية بعد 2 ثانية
-                    setTimeout(() => {
-                        element.innerHTML = `
-                            <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18">
-                                <path d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-                            </svg>
-                        `;
-                    }, 2000);
-                });
-            }
-        </script>
-        
-        
-          
-          
-        
-         
-        
-        <p>بعد التحويل، اضغط على الزر أدناه لإرسال إثبات الدفع عبر واتساب:</p>
 
+        <p>بعد التحويل، اضغط على الزر أدناه لإرسال إثبات الدفع عبر واتساب:</p>
         <a id="whatsapp-link" href="#" class="btn">تأكيد الدفع</a>
+
         <div class="payment-logos">
             <div class="logos">
                 <img src="images/msrvi_white_250x250.png" alt="مصرفي" class="payment-logo">
-                <img src="images/bkly_white_250x250.png" alt="بنكيلي" class="payment-logo1">
+                <img src="images/bkly_white_250x250.png" alt="بنكيلي" class="payment-logo">
             </div>
         </div>
     </div>
 
     <script>
-        // استخراج معرف الكتاب من رابط الصفحة
+        // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const bookId = urlParams.get('book');
+        const price = urlParams.get('price');
 
-        // قائمة الكتب
+        // Display price
+        if (price) {
+            document.getElementById('product-price').textContent = `${price} أوقية`;
+        } else {
+            document.getElementById('product-price').textContent = "--";
+        }
+
+        // Copy function
+        function copyText(element) {
+            const text = document.getElementById("account-number").innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                element.innerHTML = "✅ تم النسخ";
+                setTimeout(() => {
+                    element.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                    </svg>`;
+                }, 2000);
+            });
+        }
+
+        // WhatsApp integration
         const books = {
             "1": "الحرية المالية باستراتيجية الميزانية الصفرية",
-            "2":"Linux Basics For Hackers",
-            "3":"AirPods Pro",
-            "4":"Wifi Adapter",
+            "2": "Linux Basics For Hackers",
+            "3": "AirPods Pro",
+            "4": "Wifi Adapter",
         };
 
-        // تحديد اسم الكتاب المطلوب
-        const bookName = books[bookId] || "كتاب غير معروف";
-
-        // تعديل رابط واتساب مع تفاصيل الطلب
-        const adminPhone = "+22220201233"; // ضع رقم الواتساب الخاص بك هنا
-        const message = `السلام عليكم، لقد قمت بشراء منتج --\n\n${bookName}.\n\nإثبات الدفع:\n`;
-        const whatsappURL = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
-
-        // تعيين الرابط على الزر
-        document.getElementById('whatsapp-link').href = whatsappURL;
+        const bookName = books[bookId] || "منتج غير معروف";
+        const adminPhone = "+22220201233";
+        const message = `السلام عليكم، لقد قمت بشراء:\n${bookName}\n\nالمبلغ: ${price} أوقية\n\nإثبات الدفع:`;
+        document.getElementById('whatsapp-link').href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
     </script>
-
 </body>
-
 </html>
