@@ -15,14 +15,12 @@
     <title>وَصْلَكْ</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="index.css">
-
 </head>
 
 <body>
-
     <!-- Navbar -->
     <div class="navbar">
-        <div class="logo" >
+        <div class="logo">
             <img src="images/waslak (1).webp" alt="logo" width="40px" height="40px">
         </div>
         <div class="menu">
@@ -35,76 +33,40 @@
 
     <!-- المحتوى -->
     <div class="container">
-
         <!-- Home Section -->
-        <div id="home-section" >
-
-            <!-- Offer Text and Countdown Timer (OUTSIDE the card) -->
+        <div id="home-section">
             <div class="offer-section">
                 <p class="offer-label">🎉 عرض خاص لمدة 72 ساعة فقط! 🎉</p>
                 <p id="timer" class="countdown-timer">ينتهي خلال: 00:00:00</p>
             </div>
-            <div class="books-grid-offer" >
+            <div class="books-grid-offer">
                 <div class="book-card-offer" id="1">
-                    <!-- Red Ribbon on the Corner -->
                     <div class="offer-ribbon">خصم خاص</div>
-
                     <img src="images/book_1.webp" alt="loading">
                     <p class="book-title">الحرية المالية باستراتيجية الميزانية الصفرية</p>
-
-                    <!-- Price with strikethrough -->
                     <p class="book-price">
                         <span class="old-price">199</span> <span class="new-price">120 أوقية</span> 🔥
                     </p>
-
                     <p class="book-description-offer">
                         .الكتاب يضع لك خارطة طريق للتحكم في أموالك، مهما كان دخلك. بالأوقية التي تكسبها، ستتعلم كيف تخطط لكل واحدة منها بذكاء، تسدد ديونك، وتبني ثروتك خطوة بخطوة
                     </p>
-                    <a href="purchase.html?book=1" class="buy-btn">شراء الآن</a>
+                    <a href="purchase.html?book=1&price=120" class="buy-btn">شراء الآن</a>
                 </div>              
             </div>
-            
         </div>
-
-        <!-- JavaScript Countdown Timer -->
-        <script>
-            function startCountdown(duration) {
-                let timer = duration, hours, minutes, seconds;
-                const timerElement = document.getElementById("timer");
-
-                setInterval(function () {
-                    hours = Math.floor(timer / 3600);
-                    minutes = Math.floor((timer % 3600) / 60);
-                    seconds = timer % 60;
-
-                    timerElement.textContent = `ينتهي خلال: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-                    if (timer > 0) {
-                        timer--;
-                    } else {
-                        timerElement.textContent = "انتهى العرض!";
-                    }
-                }, 1000);
-            }
-
-            // Set countdown for 24 hours (86400 seconds)
-            startCountdown(3600);
-        </script>
 
         <!-- Books Section -->
         <div id="books-section" style="display:none;">
-            
             <p> .اختر الكتاب الذي ترغب في الحصول عليه من مكتبتنا الرقمية</p>
-
             <div class="books-grid">
                 <div class="book-card">
-                    <img src="images/book_1.webp" alt="loading" >
+                    <img src="images/book_1.webp" alt="loading">
                     <p class="book-title">الحرية المالية باستراتيجية الميزانية الصفرية</p>
                     <p class="book-price">199 أوقية</p>
                     <p class="book-description">
                         الكتاب يضع لك خارطة طريق للتحكم في أموالك، مهما كان دخلك. بالأوقية التي تكسبها، ستتعلم كيف تخطط لكل واحدة منها بذكاء، تسدد ديونك، وتبني ثروتك خطوة بخطوة.
                     </p>
-                    <a href="purchase.html?book=1" class="buy-btn">شراء الآن</a>
+                    <a href="purchase.html?book=1&price=199" class="buy-btn">شراء الآن</a>
                 </div>
 
                 <div class="book-card">
@@ -114,51 +76,38 @@
                     <p class="book-description">
                         دليل لاستخدام لينكس في الأمن السيبراني واختبار الاختراق. يغطي الأوامر الأساسية في لينكس، والتنقل داخل نظام الملفات، والشبكات، وأدوات الأمان، مما يساعد الهاكرز الأخلاقيين على بناء أساس قوي.
                     </p>
-                    <a href="purchase.html?book=2" class="buy-btn">شراء الآن</a>
+                    <a href="purchase.html?book=2&price=499" class="buy-btn">شراء الآن</a>
                 </div>
-
-                <!-- Add more book cards here -->
             </div>
         </div>
+
         <!-- Products Section -->
         <div id="products-section" style="display:none;">
-        
             <p> .اختر المنتج الذي ترغب في شراءه من متجرنا</p>
-
             <div class="books-grid-offer">
                 <div class="book-card-offer">
-                    <!-- Red Ribbon on the Corner -->
                     <div class="offer-ribbon">جديد</div>
-
                     <img src="images/Couteur1.webp" alt="loading">
                     <p class="book-title">AirPods Pro </p>
-
-                    <!-- Price with strikethrough -->
                     <p class="book-price">
                         <span>599 أوقية</span>
                     </p>
-
                     <p class="book-description-offer">
                         سماعات أذن لاسلكية بتصميم أنيق ومريح، تدعم تقنية إلغاء الضوضاء النشط و وضع الشفافية، مع جودة صوت عالية وميكروفونات مدمجة لمكالمات واضحة. تأتي مع علبة شحن تدعم الشحن السريع واللاسلكي، مما يجعلها مثالية للاستخدام اليومي و المكالمات
                     </p>
-                    <a href="purchase.html?book=3" class="buy-btn">شراء الآن</a>
+                    <a href="purchase.html?book=3&price=599" class="buy-btn">شراء الآن</a>
                 </div>
                 <div class="book-card-offer">
-                    <!-- Red Ribbon on the Corner -->
                     <div class="offer-ribbon">مستعمل</div>
-
                     <img src="images/wifiadapter.webp" alt="loading">
                     <p class="book-title">Wifi Adapter </p>
-
-                    <!-- Price with strikethrough -->
                     <p class="book-price">
                         <span>499 أوقية</span>
                     </p>
-
                     <p class="book-description-offer">
                     محول واي فاي من تي بي لينك – صغير الحجم، يوفر اتصالًا لاسلكيًا عالي السرعة، سهل الاستخدام ومتوافق مع معظم الأجهزة، مثالي لإضافة الواي فاي للكمبيوتر أو اللاب توب
                     </p>
-                    <a href="purchase.html?book=4" class="buy-btn">شراء الآن</a>
+                    <a href="purchase.html?book=4&price=499" class="buy-btn">شراء الآن</a>
                 </div>
             </div>
         </div>
@@ -170,7 +119,7 @@
     </div>
 
     <script>
-        // Function to show Home Section
+        // Section visibility functions
         function showHome(event) {
             if (event) event.preventDefault();
             document.getElementById('home-section').style.display = 'block';
@@ -178,7 +127,6 @@
             document.getElementById('books-section').style.display = 'none';
         }
         
-        // Function to show Books Section
         function showBooks(event) {
             if (event) event.preventDefault();
             document.getElementById('books-section').style.display = 'block';
@@ -186,7 +134,6 @@
             document.getElementById('products-section').style.display ='none';
         }
         
-        // Function to show Products Section
         function showProducts(event) {
             if (event) event.preventDefault();
             document.getElementById('products-section').style.display ='block';
@@ -194,10 +141,29 @@
             document.getElementById('books-section').style.display = 'none';
         }
 
-// Initially show Home section
+        // Countdown timer
+        function startCountdown(duration) {
+            let timer = duration, hours, minutes, seconds;
+            const timerElement = document.getElementById("timer");
+
+            setInterval(function () {
+                hours = Math.floor(timer / 3600);
+                minutes = Math.floor((timer % 3600) / 60);
+                seconds = timer % 60;
+
+                timerElement.textContent = `ينتهي خلال: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                if (timer > 0) {
+                    timer--;
+                } else {
+                    timerElement.textContent = "انتهى العرض!";
+                }
+            }, 1000);
+        }
+
+        // Initialize
         showHome();
-
+        startCountdown(3600); // 1 hour timer
     </script>
-
 </body>
 </html>
