@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar">
-<script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js');
-    }
-</script>
+
 <head>
     <meta property="og:title" content="وَصْلَكْ - منصة للكتب الرقمية و المنتجات المستعملة و الجديدة">
     <meta property="og:description" content="احصل على أفضل الكتب الرقمية و المنتجات بسهولة وسرعة.">
@@ -171,13 +167,18 @@
         startCountdown(3600); // 1 hour timer
     </script>
     <script>
+        // Register Service Worker
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function () {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker registered.', reg))
-                    .catch(err => console.error('Service Worker registration failed:', err));
-            });
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+              .then(registration => {
+                console.log('ServiceWorker registration successful');
+              })
+              .catch(err => {
+                console.log('ServiceWorker registration failed: ', err);
+              });
+          });
         }
-    </script>
+</script>
 </body>
 </html>
