@@ -1,7 +1,8 @@
 // Service Worker للصفحة الإدارية
 const CACHE_NAME = 'admin-panel-v1';
 const ASSETS_TO_CACHE = [
-  '/admin.html',
+  '/index.html',
+  '/purchase.html',
   '/index.css',
   'https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap'
 ];
