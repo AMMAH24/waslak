@@ -1,5 +1,5 @@
 // Service Worker Version (update this when making changes)
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = `waslak-cache-${CACHE_VERSION}`;
 
 // List of assets to cache
