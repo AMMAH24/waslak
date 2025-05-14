@@ -20,6 +20,11 @@
 </head>
 
 <body>
+    <!-- أضف هذا داخل وسم <body> -->
+    <div id="splash-screen" class="splash-screen">
+      <img src="images/icon.png" alt="App Icon" class="splash-icon">
+      <button id="reload-btn" class="reload-btn">إعادة التحميل</button>
+    </div>
     <!-- Navbar -->
     <div class="navbar">
         <div class="logo">
@@ -204,6 +209,19 @@
             });
           });
         });
+</script>
+    <script>
+      // أخفِ شاشة التمهيد بعد تحميل الصفحة
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          document.getElementById('splash-screen').classList.add('hidden');
+        }, 2000); // 2 ثواني قبل الإخفاء
+      });
+    
+      // زر إعادة التحميل
+      document.getElementById('reload-btn').addEventListener('click', () => {
+        location.reload();
+      });
 </script>
 </body>
 </html>
