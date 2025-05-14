@@ -1,44 +1,4 @@
-/* شاشة التمهيد */
-.splash-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #ffffff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  opacity: 1;
-  transition: opacity 0.5s;
-}
 
-.splash-icon {
-  width: 150px;
-  height: 150px;
-  margin-bottom: 20px;
-}
-
-.reload-btn {
-  padding: 10px 20px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.reload-btn:hover {
-  background: #0056b3;
-}
-
-/* أخفِ الشاشة بعد التحميل */
-.splash-screen.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
 /* عام */
 body {
     font-family: 'Cairo', sans-serif;
