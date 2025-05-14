@@ -187,29 +187,7 @@
         }
         
     </script>
-    <script>
-        // إظهار زر التثبيت
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-          e.preventDefault();
-          deferredPrompt = e;
-          
-          // أضف زرًا يدويًا (مثال)
-          const installButton = document.createElement('button');
-          installButton.textContent = 'ثبّت التطبيق';
-          installButton.style.position = 'fixed';
-          installButton.style.bottom = '20px';
-          installButton.style.right = '20px';
-          document.body.appendChild(installButton);
-        
-          installButton.addEventListener('click', () => {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then(() => {
-              document.body.removeChild(installButton);
-            });
-          });
-        });
-</script>
+    
     <script>
       // أخفِ شاشة التمهيد بعد تحميل الصفحة
       window.addEventListener('load', () => {
