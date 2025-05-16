@@ -1,4 +1,7 @@
-
+.recovery {
+    color : "red";
+    font-size: 14px;
+}
 /* عام */
 body {
     font-family: 'Cairo', sans-serif;
