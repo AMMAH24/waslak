@@ -150,50 +150,37 @@
     </div>
 
     <script>
-    // التقاط بارامترات الرابط
-    const urlParams = new URLSearchParams(window.location.search);
-    const bookId = urlParams.get('book');
-    const price = urlParams.get('price');
-    const ref = urlParams.get('ref'); // رمز الإحالة
+  const urlParams = new URLSearchParams(window.location.search);
+  const bookId = urlParams.get('book');
+  const price = urlParams.get('price');
+  const ref = urlParams.get('ref');
+  const books = {
+      "1": "الحرية المالية باستراتيجية الميزانية الصفرية",
+      "2": "Linux Basics For Hackers",
+      "3": "AirPods Pro",
+      "4": "Wifi Adapter",
+  };
+  const bookName = books[bookId] || "منتج غير معروف";
+  const adminPhone = "+22220201233";
 
-    // عرض السعر
-    if (price) {
-        document.getElementById('product-price').textContent = `${price} أوقية`;
-    } else {
-        document.getElementById('product-price').textContent = "--";
-    }
+  // تحميل ملف الإحالات من GitHub والتحقق
+  fetch('https://raw.githubusercontent.com/USERNAME/REPO-NAME/main/referrals.txt')
+    .then(response => response.text())
+    .then(data => {
+      const validRefs = data.split(/\r?\n/).map(r => r.trim()).filter(r => r !== "");
+      const isValidRef = ref && validRefs.includes(ref);
+      const referralText = isValidRef ? `🔗 رمز الإحالة: ${ref}` : `🔗 رمز الإحالة: غير صالح`;
 
-    // نسخ رقم الحساب
-    function copyText(element) {
-        const text = document.getElementById("account-number").innerText;
-        navigator.clipboard.writeText(text).then(() => {
-            element.innerHTML = "✅ تم النسخ";
-            setTimeout(() => {
-                element.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18">
-                    <path d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-                </svg>`;
-            }, 2000);
-        });
-    }
-
-    // أسماء الكتب حسب رقمها
-    const books = {
-        "1": "الحرية المالية باستراتيجية الميزانية الصفرية",
-        "2": "Linux Basics For Hackers",
-        "3": "AirPods Pro",
-        "4": "Wifi Adapter",
-    };
-
-    const bookName = books[bookId] || "منتج غير معروف";
-    const adminPhone = "+22220201233";
-
-    // تجهيز الرسالة
-    const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${bookName}\n💵 المبلغ: ${price} أوقية\n🔗 رمز الإحالة: ${ref || 'غير موجود'}\n\n📸 إثبات الدفع:`;
-
-    // ضبط رابط واتساب
-    document.getElementById('whatsapp-link').href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
+      const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${bookName}\n💵 المبلغ: ${price} أوقية\n${referralText}\n\n📸 إثبات الدفع:`;
+      document.getElementById('whatsapp-link').href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
+    })
+    .catch(err => {
+      // في حال فشل تحميل الملف
+      const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${bookName}\n💵 المبلغ: ${price} أوقية\n🔗 رمز الإحالة: غير متاح حاليًا\n\n📸 إثبات الدفع:`;
+      document.getElementById('whatsapp-link').href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
+    });
 </script>
+
 
 </body>
 </html>
