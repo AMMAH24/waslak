@@ -200,5 +200,19 @@
         location.reload();
       });
 </script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref');
+
+  if (ref) {
+    const buyLinks = document.querySelectorAll('a.buy-btn');
+    buyLinks.forEach(link => {
+      const currentHref = link.getAttribute('href');
+      const newHref = currentHref.includes('?') ? `${currentHref}&ref=${ref}` : `${currentHref}?ref=${ref}`;
+      link.setAttribute('href', newHref);
+    });
+  }
+</script>
+
 </body>
 </html>
