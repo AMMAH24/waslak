@@ -164,7 +164,7 @@
   const adminPhone = "+22220201233";
 
   // تحميل ملف الإحالات من GitHub والتحقق
-  fetch('https://raw.githubusercontent.com/USERNAME/REPO-NAME/main/referrals.txt')
+  fetch('https://raw.githubusercontent.com/AMMAH24/waslak/main/referrals.txt')
     .then(response => response.text())
     .then(data => {
       const validRefs = data.split(/\r?\n/).map(r => r.trim()).filter(r => r !== "");
