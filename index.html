@@ -1,218 +1,611 @@
 <!DOCTYPE html>
-<html lang="ar">
-
+<html lang="ar" dir="rtl">
 <head>
-    <meta property="og:title" content="وَصْلَكْ - منصة للكتب الرقمية و المنتجات المستعملة و الجديدة">
-    <meta property="og:description" content="احصل على أفضل الكتب الرقمية و المنتجات بسهولة وسرعة.">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>وَصْلَكْ - منصة للكتب الرقمية والمنتجات</title>
+    <meta name="description" content="احصل على أفضل الكتب الرقمية والمنتجات بسهولة وسرعة.">
+    <meta property="og:title" content="وَصْلَكْ - منصة للكتب الرقمية والمنتجات">
+    <meta property="og:description" content="احصل على أفضل الكتب الرقمية والمنتجات بسهولة وسرعة.">
     <meta property="og:image" content="https://ammah24.github.io/waslak/waslak.jpg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
     <meta property="og:url" content="https://ammah24.github.io/waslak/">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://ammah24.github.io/waslak/waslak.jpg">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>وَصْلَكْ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="index.css">
-    <link rel="manifest" href="manifest.json"
-</head>
-
-<body>
     
-    <!-- Navbar -->
-    <div class="navbar">
+    <!-- الخطوط -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- أيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #3b82f6;
+            --accent-color: #22c55e;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --dark-color: #1f2937;
+            --light-color: #f9fafb;
+            --gray-color: #9ca3af;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* شريط التنقل */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 15px 5%;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .navbar .logo img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+        
+        .navbar .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .navbar .menu {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .navbar .menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar .menu a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* المحتوى الرئيسي */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        /* الأقسام */
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--dark-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* العروض الخاصة */
+        .offer-banner {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        .countdown-timer {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        /* شبكة المنتجات */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .product-info {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+        
+        .product-description {
+            color: var(--gray-color);
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+        
+        .product-price {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .current-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+        
+        .old-price {
+            text-decoration: line-through;
+            color: var(--gray-color);
+        }
+        
+        .discount-badge {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .product-ribbon {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--danger-color);
+            color: white;
+            padding: 5px 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 4px;
+            z-index: 10;
+        }
+        
+        .buy-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .buy-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        /* ضمان الاسترجاع */
+        .guarantee {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .guarantee i {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+        
+        /* التذييل */
+        .footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 30px 5%;
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: var(--secondary-color);
+        }
+        
+        /* responsiveness */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 10px;
+            }
+            
+            .navbar .menu {
+                margin-top: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .section {
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .navbar .logo h1 {
+                font-size: 1.2rem;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* تحسينات للعرض على الجوال */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .navbar .menu {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .navbar .menu.show {
+                display: flex;
+            }
+        }
+        
+        /* تأثيرات للبطاقات */
+        .product-card {
+            position: relative;
+        }
+        
+        /* تحسينات للنصوص العربية */
+        .arabic-support {
+            line-height: 1.8;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <nav class="navbar">
         <div class="logo">
-            <img src="images/waslak (1).webp" alt="logo" width="40px" height="40px">
+            <img src="images/waslak (1).webp" alt="Waslak Logo">
+            <h1>وَصْلَكْ</h1>
         </div>
+        
+        <button class="mobile-menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+        
         <div class="menu">
-            <a href="home-section" onclick="showHome(event)">الرئيسية</a>
-            <a href="books-section" onclick="showBooks(event)">الكتب</a>
-            <a href="products-section" onclick="showProducts(event)">المنتجات</a>
+            <a href="#home" class="active">الرئيسية</a>
+            <a href="#books">الكتب</a>
+            <a href="#products">المنتجات</a>
             <a href="https://wa.me/+22220201233" target="_blank">اتصل بنا</a>
         </div>
-    </div>
+    </nav>
 
-    <!-- المحتوى -->
+    <!-- المحتوى الرئيسي -->
     <div class="container">
-        <!-- Home Section -->
-        <div id="home-section">
-            <div class="offer-section">
-                <p class="offer-label">🎉 عرض خاص لمدة 72 ساعة فقط! 🎉</p>
-                <p id="timer" class="countdown-timer">ينتهي خلال: 00:00:00</p>
-            </div>
-            <div class="books-grid-offer">
-                <div class="book-card-offer" id="1">
-                    <div class="offer-ribbon">خصم خاص</div>
-                    <img src="images/book_1.webp" alt="loading">
-                    <p class="book-title">الحرية المالية باستراتيجية الميزانية الصفرية</p>
-                    <p class="book-price">
-                        <span class="old-price">199</span> <span class="new-price">120 أوقية</span> 🔥
-                    </p>
-                    <p class="book-description-offer">
-                        .الكتاب يضع لك خارطة طريق للتحكم في أموالك، مهما كان دخلك. بالأوقية التي تكسبها، ستتعلم كيف تخطط لكل واحدة منها بذكاء، تسدد ديونك، وتبني ثروتك خطوة بخطوة
-                    </p>
-                    <a href="purchase.html?book=1&price=120" class="buy-btn">شراء الآن</a>
-                </div>              
-            </div>
-            <div class="recovery">
-                <p>إذا لم تجد الكتاب مفيدًا، راسلنا على واتساب وقل "استرجاع"، وسنُعيد لك المبلغ بكل أمــانة</p>
-            </div>
+        <!-- قسم العروض -->
+        <div class="offer-banner">
+            <h2>🎉 عرض خاص لمدة 72 ساعة فقط! 🎉</h2>
+            <div class="countdown-timer" id="countdown">ينتهي خلال: 72:00:00</div>
+            <p>خصم خاص على الكتاب الأكثر مبيعاً</p>
         </div>
 
-        <!-- Books Section -->
-        <div id="books-section" style="display:none;">
-            <p> .اختر الكتاب الذي ترغب في الحصول عليه من مكتبتنا الرقمية</p>
-            <div class="books-grid">
-                <div class="book-card">
-                    <img src="images/book_1.webp" alt="loading">
-                    <p class="book-title">الحرية المالية باستراتيجية الميزانية الصفرية</p>
-                    <p class="book-price">199 أوقية</p>
-                    <p class="book-description">
-                        الكتاب يضع لك خارطة طريق للتحكم في أموالك، مهما كان دخلك. بالأوقية التي تكسبها، ستتعلم كيف تخطط لكل واحدة منها بذكاء، تسدد ديونك، وتبني ثروتك خطوة بخطوة.
-                    </p>
-                    <a href="purchase.html?book=1&price=199" class="buy-btn">شراء الآن</a>
-                </div>
-
-                <div class="book-card">
-                    <img src="images/book_2.webp" alt="loading">
-                    <p class="book-title">Linux Basics For Hackers</p>
-                    <p class="book-price">499 أوقية</p>
-                    <p class="book-description">
-                        دليل لاستخدام لينكس في الأمن السيبراني واختبار الاختراق. يغطي الأوامر الأساسية في لينكس، والتنقل داخل نظام الملفات، والشبكات، وأدوات الأمان، مما يساعد الهاكرز الأخلاقيين على بناء أساس قوي.
-                    </p>
-                    <a href="purchase.html?book=2&price=499" class="buy-btn">شراء الآن</a>
+        <!-- قسم الرئيسية -->
+        <section id="home" class="section">
+            <h2 class="section-title"><i class="fas fa-fire"></i>العروض الخاصة</h2>
+            
+            <div class="products-grid">
+                <!-- المنتج الأول -->
+                <div class="product-card">
+                    <div class="product-ribbon">خصم خاص</div>
+                    <img src="images/book_1.webp" alt="الحرية المالية" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">الحرية المالية باستراتيجية الميزانية الصفرية</h3>
+                        <p class="product-description">الكتاب يضع لك خارطة طريق للتحكم في أموالك، مهما كان دخلك. ستتعلم كيف تخطط لكل أوقية تكسبها بذكاء، تسدد ديونك، وتبني ثروتك خطوة بخطوة.</p>
+                        <div class="product-price">
+                            <span class="current-price">120 أوقية</span>
+                            <span class="old-price">199 أوقية</span>
+                            <span class="discount-badge">خصم 40%</span>
+                        </div>
+                        <a href="purchase.html?book=1&price=120" class="buy-btn">شراء الآن</a>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Products Section -->
-        <div id="products-section" style="display:none;">
-            <p> .اختر المنتج الذي ترغب في شراءه من متجرنا</p>
-            <div class="books-grid-offer">
-                <div class="book-card-offer">
-                    <div class="offer-ribbon">جديد</div>
-                    <img src="images/Couteur1.webp" alt="loading">
-                    <p class="book-title">AirPods Pro </p>
-                    <p class="book-price">
-                        <span>599 أوقية</span>
-                    </p>
-                    <p class="book-description-offer">
-                        سماعات أذن لاسلكية بتصميم أنيق ومريح، تدعم تقنية إلغاء الضوضاء النشط و وضع الشفافية، مع جودة صوت عالية وميكروفونات مدمجة لمكالمات واضحة. تأتي مع علبة شحن تدعم الشحن السريع واللاسلكي، مما يجعلها مثالية للاستخدام اليومي و المكالمات
-                    </p>
-                    <a href="purchase.html?book=3&price=599" class="buy-btn">شراء الآن</a>
-                </div>
-                <div class="book-card-offer">
-                    <div class="offer-ribbon">مستعمل</div>
-                    <img src="images/wifiadapter.webp" alt="loading">
-                    <p class="book-title">Wifi Adapter </p>
-                    <p class="book-price">
-                        <span>499 أوقية</span>
-                    </p>
-                    <p class="book-description-offer">
-                    محول واي فاي من تي بي لينك – صغير الحجم، يوفر اتصالًا لاسلكيًا عالي السرعة، سهل الاستخدام ومتوافق مع معظم الأجهزة، مثالي لإضافة الواي فاي للكمبيوتر أو اللاب توب
-                    </p>
-                    <a href="purchase.html?book=4&price=499" class="buy-btn">شراء الآن</a>
+            
+            <div class="guarantee">
+                <i class="fas fa-shield-alt"></i>
+                <div>
+                    <h3>ضمان استعادة الأموال</h3>
+                    <p>إذا لم تجد الكتاب مفيدًا، راسلنا على واتساب وقل "استرجاع"، وسنُعيد لك المبلغ بكل أمانة خلال 24 ساعة.</p>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <!-- قسم الكتب -->
+        <section id="books" class="section" style="display: none;">
+            <h2 class="section-title"><i class="fas fa-book"></i>الكتب الرقمية</h2>
+            <p class="arabic-support">اختر الكتاب الذي ترغب في الحصول عليه من مكتبتنا الرقمية.</p>
+            
+            <div class="products-grid">
+                <!-- الكتاب الأول -->
+                <div class="product-card">
+                    <img src="images/book_1.webp" alt="الحرية المالية" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">الحرية المالية باستراتيجية الميزانية الصفرية</h3>
+                        <p class="product-description">الكتاب يضع لك خارطة طريق للتحكم في أموالك، مهما كان دخلك. ستتعلم كيف تخطط لكل أوقية تكسبها بذكاء.</p>
+                        <div class="product-price">
+                            <span class="current-price">199 أوقية</span>
+                        </div>
+                        <a href="purchase.html?book=1&price=199" class="buy-btn">شراء الآن</a>
+                    </div>
+                </div>
+                
+                <!-- الكتاب الثاني -->
+                <div class="product-card">
+                    <img src="images/book_2.webp" alt="Linux Basics" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Linux Basics For Hackers</h3>
+                        <p class="product-description">دليل لاستخدام لينكس في الأمن السيبراني واختبار الاختراق. يغطي الأوامر الأساسية في لينكس، والتنقل داخل نظام الملفات، والشبكات، وأدوات الأمان.</p>
+                        <div class="product-price">
+                            <span class="current-price">499 أوقية</span>
+                        </div>
+                        <a href="purchase.html?book=2&price=499" class="buy-btn">شراء الآن</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم المنتجات -->
+        <section id="products" class="section" style="display: none;">
+            <h2 class="section-title"><i class="fas fa-box"></i>المنتجات</h2>
+            <p class="arabic-support">اختر المنتج الذي ترغب في شراءه من متجرنا.</p>
+            
+            <div class="products-grid">
+                <!-- المنتج الأول -->
+                <div class="product-card">
+                    <div class="product-ribbon">جديد</div>
+                    <img src="images/Couteur1.webp" alt="AirPods Pro" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">AirPods Pro</h3>
+                        <p class="product-description">سماعات أذن لاسلكية بتصميم أنيق ومريح، تدعم تقنية إلغاء الضوضاء النشط ووضع الشفافية، مع جودة صوت عالية وميكروفونات مدمجة.</p>
+                        <div class="product-price">
+                            <span class="current-price">599 أوقية</span>
+                        </div>
+                        <a href="purchase.html?book=3&price=599" class="buy-btn">شراء الآن</a>
+                    </div>
+                </div>
+                
+                <!-- المنتج الثاني -->
+                <div class="product-card">
+                    <div class="product-ribbon">مستعمل</div>
+                    <img src="images/wifiadapter.webp" alt="Wifi Adapter" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">Wifi Adapter</h3>
+                        <p class="product-description">محول واي فاي من تي بي لينك – صغير الحجم، يوفر اتصالًا لاسلكيًا عالي السرعة، سهل الاستخدام ومتوافق مع معظم الأجهزة.</p>
+                        <div class="product-price">
+                            <span class="current-price">499 أوقية</span>
+                        </div>
+                        <a href="purchase.html?book=4&price=499" class="buy-btn">شراء الآن</a>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 
-    <!-- Footer -->
-    <div class="footer">
-        &copy; 2025 متجر وَصْلَكْ - جميع الحقوق محفوظة
-    </div>
+    <!-- التذييل -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 متجر وَصْلَكْ - جميع الحقوق محفوظة</p>
+            <div class="social-links">
+                <a href="https://wa.me/+22220201233" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
 
     <script>
-        // Section visibility functions
-        function showHome(event) {
-            if (event) event.preventDefault();
-            document.getElementById('home-section').style.display = 'block';
-            document.getElementById('products-section').style.display ='none';
-            document.getElementById('books-section').style.display = 'none';
-        }
-        
-        function showBooks(event) {
-            if (event) event.preventDefault();
-            document.getElementById('books-section').style.display = 'block';
-            document.getElementById('home-section').style.display = 'none';
-            document.getElementById('products-section').style.display ='none';
-        }
-        
-        function showProducts(event) {
-            if (event) event.preventDefault();
-            document.getElementById('products-section').style.display ='block';
-            document.getElementById('home-section').style.display = 'none';
-            document.getElementById('books-section').style.display = 'none';
+        // وظائف لإظهار وإخفاء الأقسام
+        function showSection(sectionId) {
+            // إخفاء جميع الأقسام
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // إظهار القسم المطلوب
+            document.getElementById(sectionId).style.display = 'block';
+            
+            // تحديث حالة القائمة النشطة
+            document.querySelectorAll('.navbar .menu a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // إضافة النشط للرابط المناسب
+            const activeLink = document.querySelector(`.navbar .menu a[href="#${sectionId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
         }
 
-        // Countdown timer
+        // تهيئة الصفحة عند التحميل
+        document.addEventListener('DOMContentLoaded', function() {
+            // إظهار القسم الرئيسي أولاً
+            showSection('home');
+            
+            // إضافة مستمعين الأحداث لقوائم التنقل
+            document.querySelectorAll('.navbar .menu a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetSection = this.getAttribute('href').substring(1);
+                    showSection(targetSection);
+                    
+                    // إغلاق菜单 الجوال إذا كان مفتوحًا
+                    document.querySelector('.navbar .menu').classList.remove('show');
+                });
+            });
+            
+            // تبديل قائمة الجوال
+            document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+                document.querySelector('.navbar .menu').classList.toggle('show');
+            });
+            
+            // بدء عدود التنازلي
+            startCountdown(72 * 60 * 60); // 72 ساعة
+        });
+
+        // عداد التنازلي
         function startCountdown(duration) {
             let timer = duration, hours, minutes, seconds;
-            const timerElement = document.getElementById("timer");
-
+            const countdownElement = document.getElementById("countdown");
+            
             setInterval(function () {
                 hours = Math.floor(timer / 3600);
                 minutes = Math.floor((timer % 3600) / 60);
                 seconds = timer % 60;
-
-                timerElement.textContent = `ينتهي خلال: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
+                
+                countdownElement.textContent = `ينتهي خلال: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
                 if (timer > 0) {
                     timer--;
                 } else {
-                    timerElement.textContent = "انتهى العرض!";
+                    countdownElement.textContent = "انتهى العرض!";
                 }
             }, 1000);
         }
-
-        // Initialize
-        showHome();
-        startCountdown(3600); // 1 hour timer
-    </script>
-    <script>
-        // Register Service Worker
-        if ('serviceWorker' in navigator) {
-          window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js') 
-              .then(registration => {
-                console.log('ServiceWorker registration successful');
-              })
-              .catch(err => {
-                console.log('ServiceWorker registration failed: ', err);
-              });
-          });
-        }
         
+        // دعم نظام الإحالات
+        const urlParams = new URLSearchParams(window.location.search);
+        const ref = urlParams.get('ref');
+        
+        if (ref) {
+            // تحديث جميع روابط الشراء لإضافة معلمة الإحالة
+            document.querySelectorAll('.buy-btn').forEach(btn => {
+                const href = btn.getAttribute('href');
+                btn.setAttribute('href', `${href}${href.includes('?') ? '&' : '?'}ref=${ref}`);
+            });
+            
+            // حفظ الإحالة في localStorage للجلسة
+            localStorage.setItem('referralCode', ref);
+        }
     </script>
-    
-    <script>
-      // أخفِ شاشة التمهيد بعد تحميل الصفحة
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          document.getElementById('splash-screen').classList.add('hidden');
-        }, 2000); // 2 ثواني قبل الإخفاء
-      });
-    
-      // زر إعادة التحميل
-      document.getElementById('reload-btn').addEventListener('click', () => {
-        location.reload();
-      });
-</script>
-<script>
-  const params = new URLSearchParams(window.location.search);
-  const ref = params.get('ref');
-
-  if (ref) {
-    const buyLinks = document.querySelectorAll('a.buy-btn');
-    buyLinks.forEach(link => {
-      const currentHref = link.getAttribute('href');
-      const newHref = currentHref.includes('?') ? `${currentHref}&ref=${ref}` : `${currentHref}?ref=${ref}`;
-      link.setAttribute('href', newHref);
-    });
-  }
-</script>
-
 </body>
 </html>
