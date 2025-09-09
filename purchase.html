@@ -1,187 +1,571 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إتمام الشراء</title>
+    <title>إتمام عملية الشراء - وَصْلَكْ</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Cairo', sans-serif !important;
-            text-align: center;
-            background-color: #f4f4f4;
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #3b82f6;
+            --accent-color: #22c55e;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --dark-color: #1f2937;
+            --light-color: #f9fafb;
+            --gray-color: #9ca3af;
+        }
+        
+        * {
             margin: 0;
-            padding: 20px;
-            direction: rtl;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
         }
-
-        h1, h2, h3 {
-            font-weight: 700;
-        }
-
-        p {
-            font-weight: 400;
-            font-size: 18px;
-        }
-
-        .container {
-            max-width: 500px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 20px;
-            background: #25D366;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 15px;
-            font-size: 18px;
-            transition: background 0.3s;
-        }
-
-        .x {
-            direction: ltr;
-            unicode-bidi: bidi-override;
-            font-weight: bold;
-            font-size: 20px;
-            border: 5px solid #33deff;
-            background-color: #33deff;
-            border-radius: 5px;
-            padding: 0 10px;
-            color: white;
-            margin-right: 6%;
-        }
-
-        .btn:hover {
-            background: #1EBE5D;
-        }
-
-        .logo img {
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: #333;
+            min-height: 100vh;
             display: flex;
-            justify-content: center; 
-            align-items: center; 
-            height: 60px;
-            width: 60px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin: 20px auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            padding: 5px;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             object-fit: cover;
         }
-
-        .payment-logos {
-            margin-top: 30px;
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
         }
-
-        .logos {
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .purchase-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .purchase-steps::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #eee;
+            z-index: 1;
+        }
+        
+        .step {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 10px;
+            border: 4px solid white;
+            box-shadow: 0 0 0 3px var(--primary-color);
+        }
+        
+        .step.active .step-number {
+            background: var(--accent-color);
+            box-shadow: 0 0 0 3px var(--accent-color);
+        }
+        
+        .step-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .product-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .product-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid #e9ecef;
+        }
+        
+        .product-details {
+            flex: 1;
+        }
+        
+        .product-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+        
+        .product-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+        
+        .payment-details {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: var(--primary-color);
+        }
+        
+        .account-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .account-label {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .account-number {
+            font-family: monospace;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            letter-spacing: 2px;
+            direction: ltr;
+            unicode-bidi: bidi-override;
+        }
+        
+        .copy-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: var(--secondary-color);
+        }
+        
+        .copy-btn.copied {
+            background: var(--accent-color);
+        }
+        
+        .instructions {
+            background: #fff4e5;
+            border-left: 4px solid var(--warning-color);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .instructions ol {
+            padding-right: 20px;
+            margin: 10px 0;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .whatsapp-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #25D366, #1EBE5D);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .whatsapp-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+        }
+        
+        .payment-methods {
             display: flex;
             justify-content: center;
             gap: 20px;
+            margin-top: 30px;
             flex-wrap: wrap;
         }
-
-        .payment-logo {
-            width: 100px;
-            height: auto;
-            border-radius: 50%;
-            background-color: white;
+        
+        .payment-method {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
         }
-
-        #product-price {
-            font-weight: bold;
-            color: #25D366;
-            margin: 0 5px;
-            font-size: 18px
+        
+        .payment-method img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
-
-        .copy-icon {
-            cursor: pointer;
-            margin-right: 0px;
-            color: #007bff;
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--gray-color);
+            font-size: 0.9rem;
         }
-
-        @media (max-width: 600px) {
-            .container {
-                width: 90%;
-                padding: 15px;
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .purchase-steps {
+                flex-direction: column;
+                gap: 25px;
             }
-            .btn {
-                font-size: 16px;
-                padding: 10px 15px;
+            
+            .purchase-steps::before {
+                display: none;
             }
+            
+            .step {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                text-align: right;
+            }
+            
+            .step-number {
+                margin: 0;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .product-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .account-info {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .account-number {
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .product-name {
+                font-size: 1.1rem;
+            }
+            
+            .product-price {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 1.1rem;
+            }
+            
+            .payment-method {
+                width: 60px;
+                height: 60px;
+            }
+        }
+        
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
         }
     </style>
 </head>
-
 <body>
     <div class="container">
-        <div class="logo">
-            <img src="images/waslak (1).webp" alt="logo" width="40px" height="40px">
+        <div class="header">
+            <div class="logo">
+                <img src="images/waslak (1).webp" alt="Waslak Logo">
+            </div>
+            <h1>إتمام عملية الشراء</h1>
+            <p>شكراً لثقتك بمنتجاتنا، يرجى اتباع الخطوات التالية</p>
         </div>
-        <h2>إتمام عملية الشراء</h2>
-        <p>للدفع ، يرجى تحويل المبلغ <span id="product-price"></span> إلى:</p>
         
-        <p style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-            <strong id="account-number" class="x">20201233</strong>
-            <span onclick="copyText(this)" title="نسخ" class="copy-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18" fill="#007bff">
-                    <path d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-                </svg>
-            </span>
-        </p>
-
-        <p>بعد التحويل، اضغط على الزر أدناه لإرسال إثبات الدفع :</p>
-        <a id="whatsapp-link" href="#" class="btn">تأكيد الدفع</a>
-
-        <div class="payment-logos">
-            <div class="logos">
-                <img src="images/bnkly.webp" alt="bnkly" class="payment-logo">
-                <img src="images/msrvi.png" alt="msrvi" class="payment-logo">
-                <img src="images/sedad.png" alt="sedad" class="payment-logo">
+        <div class="content">
+            <div class="purchase-steps">
+                <div class="step active">
+                    <div class="step-number">1</div>
+                    <div class="step-text">تحويل المبلغ</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-text">إرسال الإثبات</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-text">استلام المنتج</div>
+                </div>
+            </div>
+            
+            <div class="product-info">
+                <img id="product-image" src="" alt="Product Image" class="product-image">
+                <div class="product-details">
+                    <h2 id="product-name" class="product-name">المنتج</h2>
+                    <div id="product-price" class="product-price">السعر</div>
+                </div>
+            </div>
+            
+            <div class="payment-details">
+                <h3 class="section-title"><i class="fas fa-money-bill-wave"></i>تفاصيل الدفع</h3>
+                
+                <div class="account-info">
+                    <div>
+                        <div class="account-label">رقم الحساب</div>
+                        <div id="account-number" class="account-number">20201233</div>
+                    </div>
+                    <button id="copy-btn" class="copy-btn">
+                        <i class="far fa-copy"></i> نسخ
+                    </button>
+                </div>
+                
+                <div class="instructions">
+                    <p><strong>خطوات التحويل:</strong></p>
+                    <ol>
+                        <li>افتح تطبيق البنك أو المحفظة الإلكترونية</li>
+                        <li>ادخل رقم الحساب أعلاه</li>
+                        <li>ادخل المبلغ المطلوب</li>
+                        <li>أكد عملية التحويل</li>
+                        <li>احفظ screenshot للتحويل كإثبات</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <a id="whatsapp-link" href="#" class="whatsapp-btn">
+                <i class="fab fa-whatsapp"></i> إرسال إثبات الدفع عبر واتساب
+            </a>
+            
+            <div class="payment-methods">
+                <div class="payment-method">
+                    <img src="images/bnkly.webp" alt="bnkly">
+                </div>
+                <div class="payment-method">
+                    <img src="images/msrvi.png" alt="msrvi">
+                </div>
+                <div class="payment-method">
+                    <img src="images/sedad.png" alt="sedad">
+                </div>
             </div>
         </div>
     </div>
+    
+    <div class="footer">
+        <p>© 2025 متجر وَصْلَكْ - جميع الحقوق محفوظة</p>
+    </div>
 
     <script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const bookId = urlParams.get('book');
-  const price = urlParams.get('price');
-  const ref = urlParams.get('ref');
-  const books = {
-      "1": "الحرية المالية باستراتيجية الميزانية الصفرية",
-      "2": "Linux Basics For Hackers",
-      "3": "AirPods Pro",
-      "4": "Wifi Adapter",
-  };
-  document.getElementById('product-price').textContent = `${price} أوقية`;
-  const bookName = books[bookId] || "منتج غير معروف";
-  const adminPhone = "+22220201233";
-
-  // تحميل ملف الإحالات من GitHub والتحقق
-  fetch('https://raw.githubusercontent.com/AMMAH24/waslak/main/referrals.txt')
-    .then(response => response.text())
-    .then(data => {
-      const validRefs = data.split(/\r?\n/).map(r => r.trim()).filter(r => r !== "");
-      const isValidRef = ref && validRefs.includes(ref);
-      const referralText = isValidRef ? `🔗 رمز الإحالة: ${ref}` : `🔗 رمز الإحالة: غير صالح`;
-
-      const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${bookName}\n💵 المبلغ: ${price} أوقية\n${referralText}\n\n📸 إثبات الدفع:`;
-      document.getElementById('whatsapp-link').href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
-    })
-    .catch(err => {
-      // في حال فشل تحميل الملف
-      const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${bookName}\n💵 المبلغ: ${price} أوقية\n🔗 رمز الإحالة: غير متاح حاليًا\n\n📸 إثبات الدفع:`;
-      document.getElementById('whatsapp-link').href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
-    });
-</script>
-
-
+        document.addEventListener('DOMContentLoaded', function() {
+            // الحصول على معلمات URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookId = urlParams.get('book');
+            const price = urlParams.get('price');
+            const ref = urlParams.get('ref');
+            
+            // بيانات المنتجات
+            const products = {
+                "1": {
+                    name: "الحرية المالية باستراتيجية الميزانية الصفرية",
+                    image: "images/book_1.webp",
+                    price: price ? `${price} أوقية` : "120 أوقية"
+                },
+                "2": {
+                    name: "Linux Basics For Hackers",
+                    image: "images/book_2.webp",
+                    price: price ? `${price} أوقية` : "499 أوقية"
+                },
+                "3": {
+                    name: "AirPods Pro",
+                    image: "images/Couteur1.webp",
+                    price: price ? `${price} أوقية` : "599 أوقية"
+                },
+                "4": {
+                    name: "Wifi Adapter",
+                    image: "images/wifiadapter.webp",
+                    price: price ? `${price} أوقية` : "499 أوقية"
+                }
+            };
+            
+            // تحديث معلومات المنتج
+            const product = products[bookId] || {
+                name: "منتج غير معروف",
+                image: "images/default-product.webp",
+                price: "0 أوقية"
+            };
+            
+            document.getElementById('product-name').textContent = product.name;
+            document.getElementById('product-price').textContent = product.price;
+            document.getElementById('product-image').src = product.image;
+            document.getElementById('product-image').alt = product.name;
+            
+            // إعداد رابط واتساب
+            const adminPhone = "+22220201233";
+            
+            // تحميل ملف الإحالات من GitHub والتحقق
+            fetch('https://raw.githubusercontent.com/AMMAH24/waslak/main/referrals.txt')
+                .then(response => response.text())
+                .then(data => {
+                    const validRefs = data.split(/\r?\n/).map(r => r.trim()).filter(r => r !== "");
+                    const isValidRef = ref && validRefs.includes(ref);
+                    const referralText = isValidRef ? `🔗 رمز الإحالة: ${ref}` : `🔗 رمز الإحالة: غير صالح`;
+                    
+                    const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${product.name}\n💵 المبلغ: ${product.price}\n${referralText}\n\n📸 إثبات الدفع:`;
+                    document.getElementById('whatsapp-link').href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
+                })
+                .catch(err => {
+                    // في حال فشل تحميل الملف
+                    const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${product.name}\n💵 المبلغ: ${product.price}\n🔗 رمز الإحالة: غير متاح حاليًا\n\n📸 إثبات الدفع:`;
+                    document.getElementById('whatsapp-link').href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
+                });
+            
+            // وظيفة نسخ رقم الحساب
+            const copyBtn = document.getElementById('copy-btn');
+            const accountNumber = document.getElementById('account-number').textContent;
+            
+            copyBtn.addEventListener('click', function() {
+                navigator.clipboard.writeText(accountNumber).then(() => {
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i> تم النسخ!';
+                    copyBtn.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        copyBtn.innerHTML = '<i class="far fa-copy"></i> نسخ';
+                        copyBtn.classList.remove('copied');
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                    alert('تعذر النسخ، يرجى المحاولة يدوياً');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
