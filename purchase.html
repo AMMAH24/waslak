@@ -333,7 +333,7 @@
             font-size: 0.9rem;
         }
         
-        /* عناصر جديدة للتحقق من الصورة */
+        
         #proof-upload {
             display: none;
         }
@@ -582,13 +582,13 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // الحصول على معلمات URL
+            
             const urlParams = new URLSearchParams(window.location.search);
             const bookId = urlParams.get('book');
             const price = urlParams.get('price');
             const ref = urlParams.get('ref');
             
-            // بيانات المنتجات
+           
             const products = {
                 "1": {
                     name: "الحرية المالية باستراتيجية الميزانية الصفرية",
@@ -612,7 +612,7 @@
                 }
             };
             
-            // تحديث معلومات المنتج
+            
             const product = products[bookId] || {
                 name: "منتج غير معروف",
                 image: "images/default-product.webp",
@@ -624,10 +624,10 @@
             document.getElementById('product-image').src = product.image;
             document.getElementById('product-image').alt = product.name;
             
-            // إعداد رابط واتساب
+            
             const adminPhone = "+22220201233";
             
-            // تحميل ملف الإحالات من GitHub والتحقق
+            
             fetch('https://raw.githubusercontent.com/AMMAH24/waslak/main/referrals.txt')
                 .then(response => response.text())
                 .then(data => {
@@ -635,17 +635,17 @@
                     const isValidRef = ref && validRefs.includes(ref);
                     const referralText = isValidRef ? `🔗 رمز الإحالة: ${ref}` : `🔗 رمز الإحالة: غير صالح`;
                     
-                    // رسالة واتساب المخصصة عند النجاح
+                    
                     const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${product.name}\n💵 المبلغ: ${product.price}\n${referralText}\n✅ تم الدفع بنجاح، يرجى إرسال المنتج`;
                     document.getElementById('whatsapp-link').href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
                 })
                 .catch(err => {
-                    // في حال فشل تحميل الملف
+                   
                     const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${product.name}\n💵 المبلغ: ${product.price}\n🔗 رمز الإحالة: غير متاح حاليًا\n✅ تم الدفع بنجاح، يرجى إرسال المنتج`;
                     document.getElementById('whatsapp-link').href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
                 });
             
-            // وظيفة نسخ رقم الحساب
+            
             const copyBtn = document.getElementById('copy-btn');
             const accountNumber = document.getElementById('account-number').textContent;
             
@@ -664,7 +664,7 @@
                 });
             });
             
-            // إعداد زر رفع الصورة
+           
             const uploadBtn = document.getElementById('upload-proof-btn');
             const proofUpload = document.getElementById('proof-upload');
             const previewContainer = document.getElementById('preview-container');
@@ -685,7 +685,7 @@
                         previewImage.src = event.target.result;
                         previewContainer.style.display = 'block';
                         
-                        // معالجة الصورة باستخدام Tesseract.js
+                        
                         processImage(event.target.result);
                     };
                     
@@ -693,18 +693,18 @@
                 }
             });
             
-            // دالة للتحقق من الوقت في آخر 10 دقائق
+           
             function verifyPaymentProof(text) {
-                // التحقق من المعلومات الأساسية
+              
                 const accountNumberFound = text.includes('20201233');
                 const priceNumber = parseInt(product.price);
                 const priceFound = text.includes(priceNumber.toString());
             
-                // البحث عن الوقت
+               
                 const timePattern = /\b(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?\b/i;
                 const timeMatch = text.match(timePattern);
             
-                // البحث عن التاريخ
+            
                 const datePattern = /\b(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})\b/; // مثل 31/12/2023
                 const dateMatch = text.match(datePattern);
             
@@ -717,10 +717,10 @@
                     minute = parseInt(minute, 10);
                     second = second ? parseInt(second, 10) : 0;
                     day = parseInt(day, 10);
-                    month = parseInt(month, 10) - 1; // الأشهر تبدأ من 0 في JS
+                    month = parseInt(month, 10) - 1; 
                     year = year.length === 2 ? 2000 + parseInt(year, 10) : parseInt(year, 10);
             
-                    // التعامل مع AM/PM
+                   
                     if (ampm) {
                         ampm = ampm.toUpperCase();
                         if (ampm === "PM" && hour < 12) hour += 12;
@@ -734,27 +734,27 @@
                     hasValidTime = diffMinutes <= 10;
                 }
             
-                // نتيجة التحقق
+                
                 return accountNumberFound && priceFound && hasValidTime;
             }
 
             
             function processImage(imageData) {
-                // إظهار نافذة المعالجة
+                
                 processingOverlay.style.display = 'flex';
                 verificationResult.style.display = 'none';
                 
                 Tesseract.recognize(
                     imageData,
-                    'eng', // استخدام الإنجليزية فقط للتاريخ والوقت
+                    'eng', 
                     { logger: m => console.log(m) }
                 ).then(({ data: { text } }) => {
                     console.log('النص المستخرج:', text);
                     
-                    // التحقق من معلومات الدفع
+                    
                     const isValid = verifyPaymentProof(text);
                     
-                    // عرض نتيجة التحقق
+                   
                     verificationResult.style.display = 'block';
                     
                     if (isValid) {
@@ -765,7 +765,7 @@
                         `;
                         whatsappLink.style.display = 'block';
                         
-                        // توجيه تلقائي إلى واتساب بعد 3 ثوان
+                        
                         setTimeout(() => {
                             window.location.href = whatsappLink.href;
                         }, 3000);
@@ -778,7 +778,7 @@
                         whatsappLink.style.display = 'none';
                     }
                     
-                    // إخفاء نافذة المعالجة
+                  
                     processingOverlay.style.display = 'none';
                 }).catch(err => {
                     console.error('Error processing image:', err);
@@ -796,5 +796,6 @@
     </script>
 </body>
 </html>
+
 
 
