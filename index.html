@@ -33,7 +33,7 @@
             line-height: 1.6;
         }
         
-        /* شريط التنقل */
+       
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -84,14 +84,14 @@
             background-color: rgba(255, 255, 255, 0.2);
         }
         
-        /* المحتوى الرئيسي */
+   
         .container {
             max-width: 1200px;
             margin: 20px auto;
             padding: 0 20px;
         }
         
-        /* الأقسام */
+       
         .section {
             background: white;
             border-radius: 12px;
@@ -111,7 +111,7 @@
             gap: 10px;
         }
         
-        /* العروض الخاصة */
+     
         .offer-banner {
             background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
             color: white;
@@ -132,7 +132,7 @@
             margin: 10px 0;
         }
         
-        /* شبكة المنتجات */
+     
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -253,7 +253,7 @@
             opacity: 1;
         }
         
-        /* ضمان الاسترجاع */
+   
         .guarantee {
             background-color: #f0f9ff;
             border-left: 4px solid var(--primary-color);
@@ -270,7 +270,7 @@
             font-size: 1.5rem;
         }
         
-        /* التذييل */
+    
         .footer {
             background: var(--dark-color);
             color: white;
@@ -303,7 +303,7 @@
             color: var(--secondary-color);
         }
         
-        /* responsiveness */
+     
         @media (max-width: 768px) {
             .navbar {
                 flex-direction: column;
@@ -339,7 +339,7 @@
             }
         }
         
-        /* تحسينات للعرض على الجوال */
+      
         .mobile-menu-btn {
             display: none;
             background: none;
@@ -365,18 +365,18 @@
             }
         }
         
-        /* تأثيرات للبطاقات */
+    
         .product-card {
             position: relative;
         }
         
-        /* تحسينات للنصوص العربية */
+       
         .arabic-support {
             line-height: 1.8;
             text-align: right;
         }
         
-        /* إشعار التجديد */
+      
         .renewal-notice {
             background: #fff3cd;
             border: 1px solid #ffeaa7;
@@ -390,7 +390,7 @@
     </style>
 </head>
 <body>
-    <!-- شريط التنقل -->
+ 
     <nav class="navbar">
         <div class="logo">
             <img src="images/waslak (1).webp" alt="Waslak Logo">
@@ -409,9 +409,9 @@
         </div>
     </nav>
 
-    <!-- المحتوى الرئيسي -->
+   
     <div class="container">
-        <!-- قسم العروض -->
+       
         <div class="offer-banner" id="offer-banner">
             <h2 id="offer-title">🎉 عرض خاص لمدة 72 ساعة فقط! 🎉</h2>
             <div class="countdown-timer" id="countdown">ينتهي خلال: 72:00:00</div>
@@ -421,7 +421,7 @@
             </div>
         </div>
 
-        <!-- قسم الرئيسية -->
+      
         <section id="home" class="section">
             <h2 class="section-title"><i class="fas fa-fire"></i>العروض الخاصة</h2>
             
@@ -452,13 +452,13 @@
             </div>
         </section>
 
-        <!-- قسم الكتب -->
+     
         <section id="books" class="section" style="display: none;">
             <h2 class="section-title"><i class="fas fa-book"></i>الكتب الرقمية</h2>
             <p class="arabic-support">اختر الكتاب الذي ترغب في الحصول عليه من مكتبتنا الرقمية.</p>
             
             <div class="products-grid">
-                <!-- الكتاب الأول -->
+              
                 <div class="product-card">
                     <img src="images/book_1.webp" alt="الحرية المالية" class="product-image">
                     <div class="product-info">
@@ -471,7 +471,7 @@
                     </div>
                 </div>
                 
-                <!-- الكتاب الثاني -->
+
                 <div class="product-card">
                     <img src="images/book_2.webp" alt="Linux Basics" class="product-image">
                     <div class="product-info">
@@ -486,13 +486,13 @@
             </div>
         </section>
 
-        <!-- قسم المنتجات -->
+     
         <section id="products" class="section" style="display: none;">
             <h2 class="section-title"><i class="fas fa-box"></i>المنتجات</h2>
             <p class="arabic-support">اختر المنتج الذي ترغب في شراءه من متجرنا.</p>
             
             <div class="products-grid">
-                <!-- المنتج الأول -->
+              
                 <div class="product-card">
                     <div class="product-ribbon">جديد</div>
                     <img src="images/Couteur1.webp" alt="AirPods Pro" class="product-image">
@@ -506,7 +506,7 @@
                     </div>
                 </div>
                 
-                <!-- المنتج الثاني -->
+              
                 <div class="product-card">
                     <div class="product-ribbon">مستعمل</div>
                     <img src="images/wifiadapter.webp" alt="Wifi Adapter" class="product-image">
@@ -523,7 +523,7 @@
         </section>
     </div>
 
-    <!-- التذييل -->
+
     <footer class="footer">
         <div class="footer-content">
             <p>&copy; 2025 متجر وَصْلَكْ - جميع الحقوق محفوظة</p>
@@ -536,29 +536,29 @@
     </footer>
 
     <script>
-        // وظائف لإظهار وإخفاء الأقسام
+      
         function showSection(sectionId) {
-            // إخفاء جميع الأقسام
+           
             document.querySelectorAll('.section').forEach(section => {
                 section.style.display = 'none';
             });
             
-            // إظهار القسم المطلوب
+          
             document.getElementById(sectionId).style.display = 'block';
             
-            // تحديث حالة القائمة النشطة
+           
             document.querySelectorAll('.navbar .menu a').forEach(link => {
                 link.classList.remove('active');
             });
             
-            // إضافة النشط للرابط المناسب
+         
             const activeLink = document.querySelector(`.navbar .menu a[href="#${sectionId}"]`);
             if (activeLink) {
                 activeLink.classList.add('active');
             }
         }
 
-        // دالة لبدء العد التنازلي مع إعادة التشغيل التلقائي
+     
         function startCountdown() {
             const offerDuration = 72 * 60 * 60; // 72 ساعة بالثواني
             const breakDuration = 24 * 60 * 60; // 24 ساعة استراحة بين العروض
@@ -575,33 +575,33 @@
             const discountRibbon = document.getElementById("discount-ribbon");
             const offerBuyBtn = document.getElementById("offer-buy-btn");
             
-            // التحقق إذا كان هناك وقت مخزن مسبقاً
+            
             const storedOfferData = localStorage.getItem('offerData');
             let offerData;
             
             if (storedOfferData) {
                 offerData = JSON.parse(storedOfferData);
                 
-                // التحقق إذا انتهى العرض وانتهت فترة الاستراحة
+              
                 const now = Math.floor(Date.now() / 1000);
                 const timeSinceOfferEnd = now - offerData.offerEndTime;
                 
                 if (timeSinceOfferEnd > breakDuration) {
-                    // انتهت فترة الاستراحة، نبدأ عرض جديد
+                   
                     offerData = {
                         offerEndTime: Math.floor(Date.now() / 1000) + offerDuration,
                         isActive: true
                     };
                 }
             } else {
-                // إنشاء عرض جديد
+               
                 offerData = {
                     offerEndTime: Math.floor(Date.now() / 1000) + offerDuration,
                     isActive: true
                 };
             }
             
-            // حفظ البيانات في localStorage
+           
             localStorage.setItem('offerData', JSON.stringify(offerData));
             
             function updateTimer() {
@@ -609,18 +609,18 @@
                 const timeLeft = offerData.offerEndTime - now;
                 
                 if (timeLeft <= 0 && offerData.isActive) {
-                    // انتهى العرض، نبدأ فترة الاستراحة
+                   
                     offerData.isActive = false;
                     offerData.offerEndTime = now + breakDuration;
                     localStorage.setItem('offerData', JSON.stringify(offerData));
                     
-                    // تحديث الواجهة لعرض فترة الاستراحة
+                   
                     offerBanner.classList.add('inactive');
                     offerTitle.textContent = "🎉 انتهى العرض! 🎉";
                     offerDescription.textContent = "شكراً لاهتمامكم، سيبدأ عرض جديد قريباً";
                     renewalNotice.style.display = "block";
                     
-                    // استعادة السعر الأصلي
+                   
                     currentPrice.textContent = "199 أوقية";
                     oldPrice.style.display = "none";
                     discountBadge.style.display = "none";
@@ -628,22 +628,22 @@
                     offerBuyBtn.href = "purchase.html?book=1&price=199";
                     offerBuyBtn.classList.add('inactive');
                 } else if (timeLeft <= 0 && !offerData.isActive) {
-                    // في فترة الاستراحة، نعرض وقت بدء العرض الجديد
+                   
                     const timeUntilNextOffer = offerData.offerEndTime - now;
                     
                     if (timeUntilNextOffer <= 0) {
-                        // انتهت فترة الاستراحة، نبدأ عرض جديد
+                     
                         offerData.isActive = true;
                         offerData.offerEndTime = now + offerDuration;
                         localStorage.setItem('offerData', JSON.stringify(offerData));
                         
-                        // تحديث الواجهة للعرض الجديد
+                     
                         offerBanner.classList.remove('inactive');
                         offerTitle.textContent = "🎉 عرض خاص لمدة 72 ساعة فقط! 🎉";
                         offerDescription.textContent = "خصم خاص على الكتاب الأكثر مبيعاً";
                         renewalNotice.style.display = "none";
                         
-                        // تطبيق السعر المخفض
+                     
                         currentPrice.textContent = "120 أوقية";
                         oldPrice.style.display = "inline";
                         discountBadge.style.display = "inline-block";
@@ -651,7 +651,7 @@
                         offerBuyBtn.href = "purchase.html?book=1&price=120";
                         offerBuyBtn.classList.remove('inactive');
                     } else {
-                        // عد تنازلي لبدء العرض الجديد
+                    
                         const hours = Math.floor(timeUntilNextOffer / 3600);
                         const minutes = Math.floor((timeUntilNextOffer % 3600) / 60);
                         const seconds = timeUntilNextOffer % 60;
@@ -659,7 +659,7 @@
                         nextOfferTimer.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                     }
                 } else if (offerData.isActive) {
-                    // العد التنازلي للعرض النشط
+              
                     const hours = Math.floor(timeLeft / 3600);
                     const minutes = Math.floor((timeLeft % 3600) / 60);
                     const seconds = timeLeft % 60;
@@ -668,53 +668,53 @@
                 }
             }
             
-            // تحديث العداد على الفور ثم كل ثانية
+         
             updateTimer();
             setInterval(updateTimer, 1000);
         }
 
-        // تهيئة الصفحة عند التحميل
+     
         document.addEventListener('DOMContentLoaded', function() {
-            // بدء نظام العد التنازلي مع إعادة التشغيل التلقائي
+          
             startCountdown();
             
-            // إظهار القسم الرئيسي أولاً
+      
             showSection('home');
             
-            // إضافة مستمعين الأحداث لقوائم التنقل
+          
             document.querySelectorAll('.navbar .menu a').forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     const targetSection = this.getAttribute('href').substring(1);
                     showSection(targetSection);
                     
-                    // إغلاق قائمة الجوال إذا كان مفتوحًا
+                 
                     document.querySelector('.navbar .menu').classList.remove('show');
                 });
             });
             
-            // تبديل قائمة الجوال
+           
             document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
                 document.querySelector('.navbar .menu').classList.toggle('show');
             });
             
-            // دعم نظام الإحالات
+            
             const urlParams = new URLSearchParams(window.location.search);
             const ref = urlParams.get('ref');
             
             if (ref) {
-                // تحديث جميع روابط الشراء لإضافة معلمة الإحالة
+               
                 document.querySelectorAll('.buy-btn').forEach(btn => {
                     const href = btn.getAttribute('href');
                     btn.setAttribute('href', `${href}${href.includes('?') ? '&' : '?'}ref=${ref}`);
                 });
                 
-                // حفظ الإحالة في localStorage للجلسة
+                
                 localStorage.setItem('referralCode', ref);
             }
         });
 
-        // دالة لإعادة تعيين العد التنازلي يدوياً (للاستخدام في لوحة التحكم)
+        
         function resetCountdown() {
             localStorage.removeItem('offerData');
             startCountdown();
@@ -723,3 +723,4 @@
     </script>
 </body>
 </html>
+
