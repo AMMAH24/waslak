@@ -693,46 +693,51 @@
                 }
             });
             
-            // دالة للتحقق من الوقت في آخر 10 دقائق (بدون كشف الأسباب)
+            // دالة للتحقق من الوقت في آخر 10 دقائق
             function verifyPaymentProof(text) {
                 // التحقق من المعلومات الأساسية
                 const accountNumberFound = text.includes('20201233');
                 const priceNumber = parseInt(product.price);
                 const priceFound = text.includes(priceNumber.toString());
-                
-                // البحث عن الوقت في النص (باستخدام أنماط إنجليزية)
-                const timePatterns = [
-                    /\b\d{1,2}:\d{2}(:\d{2})?\s*(AM|PM)?\b/i, // 12:34 أو 12:34:56 أو 12:34 PM
-                    /\b\d{1,2}\s*[\.\:]\s*\d{2}\s*(AM|PM)?\b/i, // 12.34 أو 12.34 PM
-                    /\b\d{4}\b/, // وقت على شكل 1234 (قد يمثل 12:34)
-                ];
-                
-                let timeMatch = null;
-                for (const pattern of timePatterns) {
-                    timeMatch = text.match(pattern);
-                    if (timeMatch) break;
+            
+                // البحث عن الوقت
+                const timePattern = /\b(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?\b/i;
+                const timeMatch = text.match(timePattern);
+            
+                // البحث عن التاريخ
+                const datePattern = /\b(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})\b/; // مثل 31/12/2023
+                const dateMatch = text.match(datePattern);
+            
+                let hasValidTime = false;
+                if (timeMatch && dateMatch) {
+                    let [ , hour, minute, second, ampm ] = timeMatch;
+                    let [ , day, month, year ] = dateMatch;
+            
+                    hour = parseInt(hour, 10);
+                    minute = parseInt(minute, 10);
+                    second = second ? parseInt(second, 10) : 0;
+                    day = parseInt(day, 10);
+                    month = parseInt(month, 10) - 1; // الأشهر تبدأ من 0 في JS
+                    year = year.length === 2 ? 2000 + parseInt(year, 10) : parseInt(year, 10);
+            
+                    // التعامل مع AM/PM
+                    if (ampm) {
+                        ampm = ampm.toUpperCase();
+                        if (ampm === "PM" && hour < 12) hour += 12;
+                        if (ampm === "AM" && hour === 12) hour = 0;
+                    }
+            
+                    const extractedDate = new Date(year, month, day, hour, minute, second);
+                    const now = new Date();
+            
+                    const diffMinutes = Math.abs((now - extractedDate) / 60000);
+                    hasValidTime = diffMinutes <= 10;
                 }
-                
-                // البحث عن التاريخ في النص (باستخدام أنماط إنجليزية)
-                const datePatterns = [
-                    /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/, // 31/12/2023 أو 31-12-2023
-                    /\b\d{2,4}[\/\-]\d{1,2}[\/\-]\d{1,2}\b/, // 2023/12/31 أو 2023-12-31
-                    /\b\d{1,2}\s+[a-z]+\s+\d{2,4}\b/i, // 31 December 2023
-                ];
-                
-                let dateMatch = null;
-                for (const pattern of datePatterns) {
-                    dateMatch = text.match(pattern);
-                    if (dateMatch) break;
-                }
-                
-                // إذا لم نعثر على وقت، نعتبر أن المعاملة حديثة (لأغراض التوضيح)
-                // في التطبيق الحقيقي، قد تحتاج إلى طرق أكثر تطوراً للتحقق من الوقت
-                const hasValidTime = true; // تم简化 العملية لأغراض التوضيح
-                
+            
                 // نتيجة التحقق
                 return accountNumberFound && priceFound && hasValidTime;
             }
+
             
             function processImage(imageData) {
                 // إظهار نافذة المعالجة
@@ -791,4 +796,5 @@
     </script>
 </body>
 </html>
+
 
