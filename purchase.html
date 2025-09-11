@@ -699,49 +699,9 @@
                 const priceNumber = parseInt(product.price);
                 const priceFound = text.includes(priceNumber.toString());
             
-                const timePattern = /\b(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?\b/i;
-                const timeMatch = text.match(timePattern);
+                
             
-                const datePattern = /\b(\d{2,4})[\/\-](\d{1,2})[\/\-](\d{1,4})\b/;
-                const dateMatch = text.match(datePattern);
-            
-                let hasValidTime = false;
-                if (timeMatch && dateMatch) {
-                    let [ , hour, minute, second, ampm ] = timeMatch;
-                    let [ , part1, part2, part3 ] = dateMatch;
-            
-                    hour = parseInt(hour, 10);
-                    minute = parseInt(minute, 10);
-                    second = second ? parseInt(second, 10) : 0;
-            
-                    let day, month, year;
-            
-                    if (part1.length === 4) {
-    
-                        year = parseInt(part1, 10);
-                        month = parseInt(part2, 10) - 1;
-                        day = parseInt(part3, 10);
-                    } else {
-    
-                        day = parseInt(part1, 10);
-                        month = parseInt(part2, 10) - 1;
-                        year = part3.length === 2 ? 2000 + parseInt(part3, 10) : parseInt(part3, 10);
-                    }
-
-            
-                    if (ampm) {
-                        ampm = ampm.toUpperCase();
-                        if (ampm === "PM" && hour < 12) hour += 12;
-                        if (ampm === "AM" && hour === 12) hour = 0;
-                    }
-            
-                    const extractedDate = new Date(year, month, day, hour, minute, second);
-                    const now = new Date();
-                    const diffMinutes = Math.abs((now - extractedDate) / 60000);
-                    hasValidTime = diffMinutes <= 10;
-                }
-            
-                return accountNumberFound && priceFound && hasValidTime;
+                return accountNumberFound && priceFound ;
             }
 
             
@@ -802,6 +762,7 @@
     </script>
 </body>
 </html>
+
 
 
 
