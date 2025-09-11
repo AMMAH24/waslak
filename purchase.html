@@ -554,7 +554,7 @@
             <div class="verification-result" id="verification-result"></div>
             
             <a id="whatsapp-link" href="#" class="whatsapp-btn" style="display: none;">
-                <i class="fab fa-whatsapp"></i> إرسال إثبات الدفع عبر واتساب
+                <i class="fab fa-whatsapp"></i> إسلام المنتج
             </a>
             
             <div class="payment-methods">
@@ -741,7 +741,7 @@
                     hasValidTime = diffMinutes <= 10;
                 }
             
-                return accountNumberFound && priceFound ;//&& hasValidTime;
+                return accountNumberFound && priceFound && hasValidTime;
             }
 
             
@@ -767,14 +767,14 @@
                         verificationResult.className = 'verification-result verification-success';
                         verificationResult.innerHTML = `
                             <p><i class="fas fa-check-circle"></i> تم التحقق من معلومات الدفع بنجاح!</p>
-                            <p>سيتم توجيهك إلى واتساب لإرسال تأكيد الدفع.</p>
+                            <p>سيتم توجيهك إلى واتساب  لإستلام المنتج.</p>
                         `;
                         whatsappLink.style.display = 'block';
                         
                         
                         setTimeout(() => {
                             window.location.href = whatsappLink.href;
-                        }, 3000);
+                        }, 3600);
                     } else {
                         verificationResult.className = 'verification-result verification-error';
                         verificationResult.innerHTML = `
@@ -802,6 +802,7 @@
     </script>
 </body>
 </html>
+
 
 
 
