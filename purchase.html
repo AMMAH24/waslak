@@ -717,14 +717,17 @@
                     let day, month, year;
             
                     if (part1.length === 4) {
+    
                         year = parseInt(part1, 10);
                         month = parseInt(part2, 10) - 1;
                         day = parseInt(part3, 10);
                     } else {
+    
                         day = parseInt(part1, 10);
                         month = parseInt(part2, 10) - 1;
                         year = part3.length === 2 ? 2000 + parseInt(part3, 10) : parseInt(part3, 10);
                     }
+
             
                     if (ampm) {
                         ampm = ampm.toUpperCase();
@@ -799,6 +802,7 @@
     </script>
 </body>
 </html>
+
 
 
 
