@@ -333,7 +333,6 @@
             font-size: 0.9rem;
         }
         
-        
         #proof-upload {
             display: none;
         }
@@ -554,7 +553,7 @@
             <div class="verification-result" id="verification-result"></div>
             
             <a id="whatsapp-link" href="#" class="whatsapp-btn" style="display: none;">
-                <i class="fab fa-whatsapp"></i> إسلام المنتج
+                <i class="fab fa-whatsapp"></i> استلام المنتج
             </a>
             
             <div class="payment-methods">
@@ -588,7 +587,6 @@
             const price = urlParams.get('price');
             const ref = urlParams.get('ref');
             
-           
             const products = {
                 "1": {
                     name: "الحرية المالية باستراتيجية الميزانية الصفرية",
@@ -612,7 +610,6 @@
                 }
             };
             
-            
             const product = products[bookId] || {
                 name: "منتج غير معروف",
                 image: "images/default-product.webp",
@@ -624,27 +621,22 @@
             document.getElementById('product-image').src = product.image;
             document.getElementById('product-image').alt = product.name;
             
-            
             const adminPhone = "+22220201233";
-            
             
             fetch('https://raw.githubusercontent.com/AMMAH24/waslak/main/referrals.txt')
                 .then(response => response.text())
                 .then(data => {
                     const validRefs = data.split(/\r?\n/).map(r => r.trim()).filter(r => r !== "");
                     const isValidRef = ref && validRefs.includes(ref);
-                    const referralText = isValidRef ? `🔗 رمز الإحالة: ${ref}` : `🔗 رمز الإحالة: غير صالح`;
-                    
+                    const referralText = isValidRef ? `🔗 رمز المُحيل: ${ref}` : `🔗 رمز المُحيل: غير صالح`;
                     
                     const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${product.name}\n💵 المبلغ: ${product.price}\n${referralText}\n✅ تم الدفع بنجاح، يرجى إرسال المنتج`;
                     document.getElementById('whatsapp-link').href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
                 })
                 .catch(err => {
-                   
-                    const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${product.name}\n💵 المبلغ: ${product.price}\n🔗 رمز الإحالة: غير متاح حاليًا\n✅ تم الدفع بنجاح، يرجى إرسال المنتج`;
+                    const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${product.name}\n💵 المبلغ: ${product.price}\n🔗 رمز المُحيل: غير متاح حاليًا\n✅ تم الدفع بنجاح، يرجى إرسال المنتج`;
                     document.getElementById('whatsapp-link').href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
                 });
-            
             
             const copyBtn = document.getElementById('copy-btn');
             const accountNumber = document.getElementById('account-number').textContent;
@@ -664,7 +656,6 @@
                 });
             });
             
-           
             const uploadBtn = document.getElementById('upload-proof-btn');
             const proofUpload = document.getElementById('proof-upload');
             const previewContainer = document.getElementById('preview-container');
@@ -685,7 +676,6 @@
                         previewImage.src = event.target.result;
                         previewContainer.style.display = 'block';
                         
-                        
                         processImage(event.target.result);
                     };
                     
@@ -693,20 +683,36 @@
                 }
             });
             
-           
             function verifyPaymentProof(text) {
                 const accountNumberFound = text.includes('20201233');
                 const priceNumber = parseInt(product.price);
                 const priceFound = text.includes(priceNumber.toString());
-            
-                
-            
-                return accountNumberFound && priceFound ;
+
+                // استخراج التاريخ والوقت (يدعم: 20:19:53 25-09-11 و 12:29:53 02-09-2025)
+                const dateTimeRegex = /(\d{2}:\d{2}:\d{2})\s+(\d{2})-(\d{2})-(\d{2,4})/;
+                const match = text.match(dateTimeRegex);
+                let timeValid = false;
+
+                if (match) {
+                    const [_, timePart, day, month, yearPart] = match;
+                    const [hours, minutes, seconds] = timePart.split(":").map(Number);
+
+                    let year = parseInt(yearPart);
+                    if (yearPart.length === 2) {
+                        year = 2000 + year;
+                    }
+
+                    const txTime = new Date(year, parseInt(month) - 1, parseInt(day), hours, minutes, seconds);
+                    const now = new Date();
+
+                    const diffMinutes = (now - txTime) / 60000;
+                    timeValid = diffMinutes >= 0 && diffMinutes <= 10;
+                }
+
+                return accountNumberFound && priceFound && timeValid;
             }
 
-            
             function processImage(imageData) {
-                
                 processingOverlay.style.display = 'flex';
                 verificationResult.style.display = 'none';
                 
@@ -717,10 +723,8 @@
                 ).then(({ data: { text } }) => {
                     console.log('النص المستخرج:', text);
                     
-                    
                     const isValid = verifyPaymentProof(text);
                     
-                   
                     verificationResult.style.display = 'block';
                     
                     if (isValid) {
@@ -731,7 +735,6 @@
                         `;
                         whatsappLink.style.display = 'block';
                         
-                        
                         setTimeout(() => {
                             window.location.href = whatsappLink.href;
                         }, 3600);
@@ -739,12 +742,11 @@
                         verificationResult.className = 'verification-result verification-error';
                         verificationResult.innerHTML = `
                             <p><i class="fas fa-times-circle"></i> تعذر التحقق من معلومات الدفع</p>
-                            <p>يرجى التأكد من أن الصورة تحتوي على معلومات التحويل الصحيحة</p>
+                            <p>يرجى التأكد من أن الصورة تحتوي على معلومات التحويل الصحيحة وفي آخر 10 دقائق</p>
                         `;
                         whatsappLink.style.display = 'none';
                     }
                     
-                  
                     processingOverlay.style.display = 'none';
                 }).catch(err => {
                     console.error('Error processing image:', err);
@@ -762,11 +764,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
