@@ -709,7 +709,7 @@
                     timeValid = diffMinutes >= 0 && diffMinutes <= 10;
                 }
 
-                return accountNumberFound && priceFound && timeValid;
+                return accountNumberFound && priceFound;// && timeValid;
             }
 
             function processImage(imageData) {
@@ -742,7 +742,7 @@
                         verificationResult.className = 'verification-result verification-error';
                         verificationResult.innerHTML = `
                             <p><i class="fas fa-times-circle"></i> تعذر التحقق من معلومات الدفع</p>
-                            <p>يرجى التأكد من أن الصورة تحتوي على معلومات التحويل الصحيحة وفي آخر 10 دقائق</p>
+                            <p>يرجى التأكد من معلومات التحويل الصحيحة</p>
                         `;
                         whatsappLink.style.display = 'none';
                     }
@@ -764,3 +764,4 @@
     </script>
 </body>
 </html>
+
