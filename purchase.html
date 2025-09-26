@@ -688,6 +688,15 @@
                 const priceNumber = parseInt(product.price);
                 const priceFound = text.includes(priceNumber.toString());
 
+                const successKeywords = [
+                    "تم تحويل بنجاح",   // العربية
+                    "successful transfer", // الإنجليزية
+                    "transfert réussi"     // الفرنسية
+                ];
+                const successFound = successKeywords.some(keyword =>
+                text.toLowerCase().includes(keyword.toLowerCase())
+                );
+
                 // استخراج التاريخ والوقت (يدعم: 20:19:53 25-09-11 و 12:29:53 02-09-2025)
                 const dateTimeRegex = /(\d{2}:\d{2}:\d{2})\s+(\d{2})-(\d{2})-(\d{2,4})/;
                 const match = text.match(dateTimeRegex);
@@ -764,4 +773,5 @@
     </script>
 </body>
 </html>
+
 
