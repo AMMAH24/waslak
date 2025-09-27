@@ -401,7 +401,6 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Responsive Design */
         @media (max-width: 768px) {
             .purchase-steps {
                 flex-direction: column;
@@ -469,7 +468,6 @@
             }
         }
         
-        /* Animations */
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
@@ -684,41 +682,106 @@
             });
             
             function verifyPaymentProof(text) {
-                const accountNumberFound = text.includes('20201233');
-                const priceNumber = parseInt(product.price);
-                const priceFound = text.includes(priceNumber.toString());
-
-                const successKeywords = [
-                    "تم تحويل بنجاح",   // العربية
-                    "successful transfer", // الإنجليزية
-                    "transfert réussi"     // الفرنسية
-                ];
-                const successFound = successKeywords.some(keyword =>
-                text.toLowerCase().includes(keyword.toLowerCase())
-                );
-
-                // استخراج التاريخ والوقت (يدعم: 20:19:53 25-09-11 و 12:29:53 02-09-2025)
-                const dateTimeRegex = /(\d{2}:\d{2}:\d{2})\s+(\d{2})-(\d{2})-(\d{2,4})/;
-                const match = text.match(dateTimeRegex);
-                let timeValid = false;
-
-                if (match) {
-                    const [_, timePart, day, month, yearPart] = match;
-                    const [hours, minutes, seconds] = timePart.split(":").map(Number);
-
-                    let year = parseInt(yearPart);
-                    if (yearPart.length === 2) {
-                        year = 2000 + year;
-                    }
-
-                    const txTime = new Date(year, parseInt(month) - 1, parseInt(day), hours, minutes, seconds);
-                    const now = new Date();
-
-                    const diffMinutes = (now - txTime) / 60000;
-                    timeValid = diffMinutes >= 0 && diffMinutes <= 10;
+                const cleanText = text.replace(/\s+/g, ' ').toLowerCase();
+                
+                const isTransfer = cleanText.includes('transfer') || 
+                                  cleanText.includes('تحويل') || 
+                                  cleanText.includes('send') || 
+                                  cleanText.includes('إرسال') ||
+                                  cleanText.includes('دفع') ||
+                                  cleanText.includes('payment');
+                
+                const isRequest = cleanText.includes('request') || 
+                                 cleanText.includes('طلب') || 
+                                 cleanText.includes('receive') || 
+                                 cleanText.includes('استلام');
+                
+                if (!isTransfer || isRequest) {
+                    return false;
                 }
+                
+                const accountNumberFound = cleanText.includes('20201233');
+                if (!accountNumberFound) {
+                    return false;
+                }
+                
+                const priceNumber = parseInt(product.price);
+                const priceFound = cleanText.includes(priceNumber.toString());
+                if (!priceFound) {
+                    return false;
+                }
+                
+                const timeValid = verifyDateTime(cleanText);
+                if (!timeValid) {
+                    return false;
+                }
+                
+                return true;
+            }
 
-                return accountNumberFound && priceFound;// && timeValid;
+            function verifyDateTime(text) {
+                const now = new Date();
+                const tenMinutesAgo = new Date(now.getTime() - 10 * 60000);
+                
+                const patterns = [
+                    /(\d{1,2}):(\d{2}):(\d{2})\s+(\d{1,2})-(\d{1,2})-(\d{2,4})/,
+                    /(\d{1,2}):(\d{2})\s+(\d{1,2})-(\d{1,2})-(\d{2,4})/,
+                    /(\d{1,2})-(\d{1,2})-(\d{2,4})\s+(\d{1,2}):(\d{2}):(\d{2})/,
+                    /(\d{1,2})-(\d{1,2})-(\d{2,4})\s+(\d{1,2}):(\d{2})/,
+                    /([٠١٢٣٤٥٦٧٨٩]{1,2}):([٠١٢٣٤٥٦٧٨٩]{2}):([٠١٢٣٤٥٦٧٨٩]{2})\s+([٠١٢٣٤٥٦٧٨٩]{1,2})-([٠١٢٣٤٥٦٧٨٩]{1,2})-([٠١٢٣٤٥٦٧٨٩]{2,4})/,
+                    /(\d{1,2}):(\d{2}):(\d{2})\s+([٠١٢٣٤٥٦٧٨٩]{1,2})-([٠١贰叁肆伍陆柒捌玖]{1,2})-([٠١٢٣٤٥٦٧捌玖]{2,4})/,
+                    /(\d{1,2}):(\d{2})\s*(am|pm)\s+(\d{1,2})-(\d{1,2})-(\d{2,4})/i
+                ];
+                
+                for (const pattern of patterns) {
+                    const match = text.match(pattern);
+                    if (match) {
+                        let hours, minutes, seconds = 0, day, month, year;
+                        
+                        if (pattern === patterns[6]) {
+                            [, hours, minutes, ampm, day, month, year] = match;
+                            hours = parseInt(hours);
+                            if (ampm.toLowerCase() === 'pm' && hours < 12) hours += 12;
+                            if (ampm.toLowerCase() === 'am' && hours === 12) hours = 0;
+                        } else if (pattern === patterns[4] || pattern === patterns[5]) {
+                            [, hours, minutes, seconds, day, month, year] = match.map(convertArabicToEnglish);
+                        } else if (pattern === patterns[1]) {
+                            [, hours, minutes, day, month, year] = match;
+                            seconds = 0;
+                        } else if (pattern === patterns[3]) {
+                            [, day, month, year, hours, minutes, seconds] = match;
+                        } else {
+                            [, hours, minutes, seconds, day, month, year] = match;
+                        }
+                        
+                        hours = parseInt(hours); minutes = parseInt(minutes); seconds = parseInt(seconds);
+                        day = parseInt(day); month = parseInt(month); year = parseInt(year);
+                        
+                        if (year < 100) year += 2000;
+                        
+                        const txTime = new Date(year, month - 1, day, hours, minutes, seconds);
+                        
+                        if (isNaN(txTime.getTime())) continue;
+                        
+                        const diffMinutes = (now - txTime) / 60000;
+                        if (diffMinutes >= 0 && diffMinutes <= 10) {
+                            return true;
+                        }
+                    }
+                }
+                
+                return false;
+            }
+
+            function convertArabicToEnglish(text) {
+                if (!text) return text;
+                
+                const arabicToEnglishMap = {
+                    '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
+                    '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
+                };
+                
+                return text.toString().split('').map(char => arabicToEnglishMap[char] || char).join('');
             }
 
             function processImage(imageData) {
@@ -773,5 +836,3 @@
     </script>
 </body>
 </html>
-
-
