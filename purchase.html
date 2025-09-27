@@ -684,34 +684,37 @@
             function verifyPaymentProof(text) {
                 const cleanText = text.replace(/\s+/g, ' ').toLowerCase();
                 
-                const isTransfer = cleanText.includes('transfer') || 
-                                  cleanText.includes('تحويل') || 
-                                  cleanText.includes('send') || 
-                                  cleanText.includes('إرسال') ||
-                                  cleanText.includes('دفع') ||
-                                  cleanText.includes('payment');
+                console.log('النص المستخرج:', cleanText);
                 
-                const isRequest = cleanText.includes('request') || 
-                                 cleanText.includes('طلب') || 
-                                 cleanText.includes('receive') || 
-                                 cleanText.includes('استلام');
+              
+                const successKeywords = [
+                    'transfer successful', 'transfert successfull', 'successful', 
+                    'successfull', 'ناجح', 'النقل ناجح', 'تحويل ناجح',
+                    "réussi ", "paiement","paiement réussi"
+                ];
                 
-                if (!isTransfer || isRequest) {
+                const hasSuccessKeyword = successKeywords.some(keyword => 
+                    cleanText.includes(keyword.toLowerCase())
+                );
+                
+                if (!hasSuccessKeyword) {
                     return false;
                 }
+                
                 
                 const accountNumberFound = cleanText.includes('20201233');
                 if (!accountNumberFound) {
                     return false;
                 }
-                
+            
                 const priceNumber = parseInt(product.price);
                 const priceFound = cleanText.includes(priceNumber.toString());
                 if (!priceFound) {
                     return false;
                 }
                 
-                const timeValid = verifyDateTime(cleanText);
+     
+                const timeValid = verifyTime(cleanText);
                 if (!timeValid) {
                     return false;
                 }
@@ -719,69 +722,47 @@
                 return true;
             }
 
-            function verifyDateTime(text) {
+            function verifyTime(text) {
                 const now = new Date();
-                const tenMinutesAgo = new Date(now.getTime() - 10 * 60000);
                 
-                const patterns = [
-                    /(\d{1,2}):(\d{2}):(\d{2})\s+(\d{1,2})-(\d{1,2})-(\d{2,4})/,
-                    /(\d{1,2}):(\d{2})\s+(\d{1,2})-(\d{1,2})-(\d{2,4})/,
-                    /(\d{1,2})-(\d{1,2})-(\d{2,4})\s+(\d{1,2}):(\d{2}):(\d{2})/,
-                    /(\d{1,2})-(\d{1,2})-(\d{2,4})\s+(\d{1,2}):(\d{2})/,
-                    /([٠١٢٣٤٥٦٧٨٩]{1,2}):([٠١٢٣٤٥٦٧٨٩]{2}):([٠١٢٣٤٥٦٧٨٩]{2})\s+([٠١٢٣٤٥٦٧٨٩]{1,2})-([٠١٢٣٤٥٦٧٨٩]{1,2})-([٠١٢٣٤٥٦٧٨٩]{2,4})/,
-                    /(\d{1,2}):(\d{2}):(\d{2})\s+([٠١٢٣٤٥٦٧٨٩]{1,2})-([٠١贰叁肆伍陆柒捌玖]{1,2})-([٠١٢٣٤٥٦٧捌玖]{2,4})/,
-                    /(\d{1,2}):(\d{2})\s*(am|pm)\s+(\d{1,2})-(\d{1,2})-(\d{2,4})/i
-                ];
+        
+                const timePattern = /(\d{1,2}):(\d{2}):(\d{2})/g;
+                const times = [];
+                let match;
                 
-                for (const pattern of patterns) {
-                    const match = text.match(pattern);
-                    if (match) {
-                        let hours, minutes, seconds = 0, day, month, year;
-                        
-                        if (pattern === patterns[6]) {
-                            [, hours, minutes, ampm, day, month, year] = match;
-                            hours = parseInt(hours);
-                            if (ampm.toLowerCase() === 'pm' && hours < 12) hours += 12;
-                            if (ampm.toLowerCase() === 'am' && hours === 12) hours = 0;
-                        } else if (pattern === patterns[4] || pattern === patterns[5]) {
-                            [, hours, minutes, seconds, day, month, year] = match.map(convertArabicToEnglish);
-                        } else if (pattern === patterns[1]) {
-                            [, hours, minutes, day, month, year] = match;
-                            seconds = 0;
-                        } else if (pattern === patterns[3]) {
-                            [, day, month, year, hours, minutes, seconds] = match;
-                        } else {
-                            [, hours, minutes, seconds, day, month, year] = match;
-                        }
-                        
-                        hours = parseInt(hours); minutes = parseInt(minutes); seconds = parseInt(seconds);
-                        day = parseInt(day); month = parseInt(month); year = parseInt(year);
-                        
-                        if (year < 100) year += 2000;
-                        
-                        const txTime = new Date(year, month - 1, day, hours, minutes, seconds);
-                        
-                        if (isNaN(txTime.getTime())) continue;
-                        
-                        const diffMinutes = (now - txTime) / 60000;
-                        if (diffMinutes >= 0 && diffMinutes <= 10) {
-                            return true;
-                        }
+                while ((match = timePattern.exec(text)) !== null) {
+                    const hours = parseInt(match[1]);
+                    const minutes = parseInt(match[2]);
+                    const seconds = parseInt(match[3]);
+                    
+                
+                    if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59 && seconds >= 0 && seconds <= 59) {
+                        times.push({hours, minutes, seconds});
                     }
                 }
                 
+                if (times.length === 0) {
+                    return false;
+                }
+                
+         
+                const foundTime = times[0];
+                
+             
+                const extractedTime = new Date();
+                extractedTime.setHours(foundTime.hours);
+                extractedTime.setMinutes(foundTime.minutes);
+                extractedTime.setSeconds(foundTime.seconds);
+                
+                const diffMinutes = (now - extractedTime) / (1000 * 60);
+                console.log(`الوقت المستخرج: ${foundTime.hours}:${foundTime.minutes}:${foundTime.seconds}`);
+                console.log(`الفرق الزمني: ${diffMinutes.toFixed(2)} دقيقة`);
+                
+                if (diffMinutes >= 0 && diffMinutes <= 3) {
+                    return true;
+                }
+                
                 return false;
-            }
-
-            function convertArabicToEnglish(text) {
-                if (!text) return text;
-                
-                const arabicToEnglishMap = {
-                    '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
-                    '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
-                };
-                
-                return text.toString().split('').map(char => arabicToEnglishMap[char] || char).join('');
             }
 
             function processImage(imageData) {
@@ -790,7 +771,7 @@
                 
                 Tesseract.recognize(
                     imageData,
-                    'eng', 
+                    'ara+eng', 
                     { logger: m => console.log(m) }
                 ).then(({ data: { text } }) => {
                     console.log('النص المستخرج:', text);
@@ -803,18 +784,18 @@
                         verificationResult.className = 'verification-result verification-success';
                         verificationResult.innerHTML = `
                             <p><i class="fas fa-check-circle"></i> تم التحقق من معلومات الدفع بنجاح!</p>
-                            <p>سيتم توجيهك إلى واتساب  لإستلام المنتج.</p>
+                            <p>سيتم توجيهك إلى واتساب لإستلام المنتج.</p>
                         `;
                         whatsappLink.style.display = 'block';
                         
                         setTimeout(() => {
                             window.location.href = whatsappLink.href;
-                        }, 3600);
+                        }, 3000);
                     } else {
                         verificationResult.className = 'verification-result verification-error';
                         verificationResult.innerHTML = `
                             <p><i class="fas fa-times-circle"></i> تعذر التحقق من معلومات الدفع</p>
-                            <p>يرجى التأكد من معلومات التحويل الصحيحة</p>
+                            <p>يرجى التأكد من أن إثبــــات الدفــع صحيـــح . ـ.</p>
                         `;
                         whatsappLink.style.display = 'none';
                     }
