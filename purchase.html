@@ -598,25 +598,25 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             
-            // إضافة وظائف النقر على الدوائر
+            // 
             const step1 = document.getElementById('step-1');
             const step2 = document.getElementById('step-2');
             const step3 = document.getElementById('step-3');
             const paymentDetails = document.getElementById('payment-details');
             const uploadProofBtn = document.getElementById('upload-proof-btn');
             
-            // عند النقر على دائرة 1: الانتقال إلى تفاصيل الدفع
+            // 
             step1.addEventListener('click', function() {
                 paymentDetails.scrollIntoView({ behavior: 'smooth' });
             });
             
-            // عند النقر على دائرة 2: تغيير اللون للأخضر والانتقال لرفع الصورة
+            // 
             step2.addEventListener('click', function() {
                 step2.classList.add('active');
                 uploadProofBtn.scrollIntoView({ behavior: 'smooth' });
             });
             
-            // عند النقر على دائرة 3 بعد التحقق: الانتقال إلى واتساب
+            // 
             step3.addEventListener('click', function() {
                 if(step3.classList.contains('completed')) {
                     window.location.href = document.getElementById('whatsapp-link').href;
@@ -753,15 +753,15 @@
                 if (!priceFound) {
                     return false;
                 }
-                
+                /*
                 const timeValid = verifyTime(cleanText);
                 if (!timeValid) {
                     return false;
                 }
-                
+                */
                 return true;
             }
-
+            /*
             function verifyTime(text) {
                 const now = new Date();
                 
@@ -800,6 +800,7 @@
                 
                 return false;
             }
+            */
 
             function processImage(imageData) {
                 processingOverlay.style.display = 'flex';
@@ -858,3 +859,4 @@
     </script>
 </body>
 </html>
+
