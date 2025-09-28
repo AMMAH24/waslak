@@ -16,6 +16,7 @@
             --accent-color: #22c55e;
             --danger-color: #ef4444;
             --warning-color: #f59e0b;
+            --gold-color: #FFD700;
             --dark-color: #1f2937;
             --light-color: #f9fafb;
             --gray-color: #9ca3af;
@@ -115,6 +116,12 @@
             position: relative;
             z-index: 2;
             flex: 1;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .step:hover .step-number {
+            transform: scale(1.1);
         }
         
         .step-number {
@@ -131,11 +138,18 @@
             margin: 0 auto 10px;
             border: 4px solid white;
             box-shadow: 0 0 0 3px var(--primary-color);
+            transition: all 0.3s ease;
         }
         
         .step.active .step-number {
             background: var(--accent-color);
             box-shadow: 0 0 0 3px var(--accent-color);
+        }
+        
+        .step.completed .step-number {
+            background: var(--gold-color);
+            box-shadow: 0 0 0 3px var(--gold-color);
+            color: #333;
         }
         
         .step-text {
@@ -477,6 +491,10 @@
         .pulse {
             animation: pulse 2s infinite;
         }
+        
+        .scroll-target {
+            scroll-margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -491,15 +509,15 @@
         
         <div class="content">
             <div class="purchase-steps">
-                <div class="step active">
+                <div class="step active" id="step-1">
                     <div class="step-number">1</div>
                     <div class="step-text">تحويل المبلغ</div>
                 </div>
-                <div class="step">
+                <div class="step" id="step-2">
                     <div class="step-number">2</div>
                     <div class="step-text">إرسال الإثبات</div>
                 </div>
-                <div class="step">
+                <div class="step" id="step-3">
                     <div class="step-number">3</div>
                     <div class="step-text">استلام المنتج</div>
                 </div>
@@ -513,7 +531,7 @@
                 </div>
             </div>
             
-            <div class="payment-details">
+            <div class="payment-details scroll-target" id="payment-details">
                 <h3 class="section-title"><i class="fas fa-money-bill-wave"></i>تفاصيل الدفع</h3>
                 
                 <div class="account-info">
@@ -538,7 +556,7 @@
                 </div>
             </div>
             
-            <button id="upload-proof-btn" class="whatsapp-btn upload-btn">
+            <button id="upload-proof-btn" class="whatsapp-btn upload-btn scroll-target">
                 <i class="fas fa-upload"></i> رفع صورة إثبات الدفع
             </button>
             
@@ -579,6 +597,31 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            
+            // إضافة وظائف النقر على الدوائر
+            const step1 = document.getElementById('step-1');
+            const step2 = document.getElementById('step-2');
+            const step3 = document.getElementById('step-3');
+            const paymentDetails = document.getElementById('payment-details');
+            const uploadProofBtn = document.getElementById('upload-proof-btn');
+            
+            // عند النقر على دائرة 1: الانتقال إلى تفاصيل الدفع
+            step1.addEventListener('click', function() {
+                paymentDetails.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // عند النقر على دائرة 2: تغيير اللون للأخضر والانتقال لرفع الصورة
+            step2.addEventListener('click', function() {
+                step2.classList.add('active');
+                uploadProofBtn.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // عند النقر على دائرة 3 بعد التحقق: الانتقال إلى واتساب
+            step3.addEventListener('click', function() {
+                if(step3.classList.contains('completed')) {
+                    window.location.href = document.getElementById('whatsapp-link').href;
+                }
+            });
             
             const urlParams = new URLSearchParams(window.location.search);
             const bookId = urlParams.get('book');
@@ -686,7 +729,6 @@
                 
                 console.log('النص المستخرج:', cleanText);
                 
-              
                 const successKeywords = [
                     'transfer successful', 'transfert successfull', 'successful', 
                     'successfull', 'ناجح', 'النقل ناجح', 'تحويل ناجح',
@@ -701,7 +743,6 @@
                     return false;
                 }
                 
-                
                 const accountNumberFound = cleanText.includes('20201233');
                 if (!accountNumberFound) {
                     return false;
@@ -713,7 +754,6 @@
                     return false;
                 }
                 
-     
                 const timeValid = verifyTime(cleanText);
                 if (!timeValid) {
                     return false;
@@ -725,7 +765,6 @@
             function verifyTime(text) {
                 const now = new Date();
                 
-        
                 const timePattern = /(\d{1,2}):(\d{2}):(\d{2})/g;
                 const times = [];
                 let match;
@@ -735,7 +774,6 @@
                     const minutes = parseInt(match[2]);
                     const seconds = parseInt(match[3]);
                     
-                
                     if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59 && seconds >= 0 && seconds <= 59) {
                         times.push({hours, minutes, seconds});
                     }
@@ -745,10 +783,8 @@
                     return false;
                 }
                 
-         
                 const foundTime = times[0];
                 
-             
                 const extractedTime = new Date();
                 extractedTime.setHours(foundTime.hours);
                 extractedTime.setMinutes(foundTime.minutes);
@@ -788,6 +824,11 @@
                         `;
                         whatsappLink.style.display = 'block';
                         
+                        // 
+                        step3.classList.add('completed');
+                        step3.classList.add('pulse');
+                        
+                        // 
                         setTimeout(() => {
                             window.location.href = whatsappLink.href;
                         }, 3000);
@@ -795,7 +836,7 @@
                         verificationResult.className = 'verification-result verification-error';
                         verificationResult.innerHTML = `
                             <p><i class="fas fa-times-circle"></i> تعذر التحقق من معلومات الدفع</p>
-                            <p>يرجى التأكد من أن إثبــــات الدفــع صحيـــح . ـ.</p>
+                            <p>يرجى التأكد من أن إثبــــات الدفــع صحيـــح.</p>
                         `;
                         whatsappLink.style.display = 'none';
                     }
@@ -817,4 +858,3 @@
     </script>
 </body>
 </html>
-
