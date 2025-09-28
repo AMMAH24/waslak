@@ -568,10 +568,6 @@
             
             <div class="verification-result" id="verification-result"></div>
             
-            <a id="whatsapp-link" href="#" class="whatsapp-btn" style="display: none;">
-                <i class="fab fa-whatsapp"></i> استلام المنتج
-            </a>
-            
             <div class="payment-methods">
                 <div class="payment-method">
                     <img src="images/bnkly.webp" alt="bnkly">
@@ -598,28 +594,31 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             
-            // 
+            
             const step1 = document.getElementById('step-1');
             const step2 = document.getElementById('step-2');
             const step3 = document.getElementById('step-3');
             const paymentDetails = document.getElementById('payment-details');
             const uploadProofBtn = document.getElementById('upload-proof-btn');
             
-            // 
+            
+            let whatsappUrl = "";
+            
+            
             step1.addEventListener('click', function() {
                 paymentDetails.scrollIntoView({ behavior: 'smooth' });
             });
             
-            // 
+            
             step2.addEventListener('click', function() {
                 step2.classList.add('active');
                 uploadProofBtn.scrollIntoView({ behavior: 'smooth' });
             });
             
-            // 
+            
             step3.addEventListener('click', function() {
-                if(step3.classList.contains('completed')) {
-                    window.location.href = document.getElementById('whatsapp-link').href;
+                if(step3.classList.contains('completed') && whatsappUrl) {
+                    window.open(whatsappUrl, '_blank');
                 }
             });
             
@@ -672,11 +671,11 @@
                     const referralText = isValidRef ? `🔗 رمز المُحيل: ${ref}` : `🔗 رمز المُحيل: غير صالح`;
                     
                     const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${product.name}\n💵 المبلغ: ${product.price}\n${referralText}\n✅ تم الدفع بنجاح، يرجى إرسال المنتج`;
-                    document.getElementById('whatsapp-link').href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
+                    whatsappUrl = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
                 })
                 .catch(err => {
                     const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${product.name}\n💵 المبلغ: ${product.price}\n🔗 رمز المُحيل: غير متاح حاليًا\n✅ تم الدفع بنجاح، يرجى إرسال المنتج`;
-                    document.getElementById('whatsapp-link').href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
+                    whatsappUrl = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
                 });
             
             const copyBtn = document.getElementById('copy-btn');
@@ -703,7 +702,6 @@
             const previewImage = document.getElementById('preview-image');
             const verificationResult = document.getElementById('verification-result');
             const processingOverlay = document.getElementById('processing-overlay');
-            const whatsappLink = document.getElementById('whatsapp-link');
             
             uploadBtn.addEventListener('click', function() {
                 proofUpload.click();
@@ -753,15 +751,15 @@
                 if (!priceFound) {
                     return false;
                 }
-                /*
+                
                 const timeValid = verifyTime(cleanText);
                 if (!timeValid) {
                     return false;
                 }
-                */
+                
                 return true;
             }
-            /*
+
             function verifyTime(text) {
                 const now = new Date();
                 
@@ -800,7 +798,6 @@
                 
                 return false;
             }
-            */
 
             function processImage(imageData) {
                 processingOverlay.style.display = 'flex';
@@ -821,25 +818,18 @@
                         verificationResult.className = 'verification-result verification-success';
                         verificationResult.innerHTML = `
                             <p><i class="fas fa-check-circle"></i> تم التحقق من معلومات الدفع بنجاح!</p>
-                            <p>سيتم توجيهك إلى واتساب لإستلام المنتج.</p>
                         `;
-                        whatsappLink.style.display = 'block';
                         
-                        // 
+                        
                         step3.classList.add('completed');
                         step3.classList.add('pulse');
                         
-                        // 
-                        setTimeout(() => {
-                            window.location.href = whatsappLink.href;
-                        }, 3000);
                     } else {
                         verificationResult.className = 'verification-result verification-error';
                         verificationResult.innerHTML = `
                             <p><i class="fas fa-times-circle"></i> تعذر التحقق من معلومات الدفع</p>
-                            <p>يرجى التأكد من أن إثبــــات الدفــع صحيـــح.</p>
+                            <p>يرجى التأكد من أن إثبــــات الدفــع صحيـــح . ـ.</p>
                         `;
-                        whatsappLink.style.display = 'none';
                     }
                     
                     processingOverlay.style.display = 'none';
@@ -851,7 +841,6 @@
                         <p><i class="fas fa-times-circle"></i> حدث خطأ أثناء معالجة الصورة</p>
                         <p>يرجى المحاولة مرة أخرى أو إرسال الإثبات مباشرة عبر واتساب</p>
                     `;
-                    whatsappLink.style.display = 'none';
                     processingOverlay.style.display = 'none';
                 });
             }
@@ -859,6 +848,3 @@
     </script>
 </body>
 </html>
-
-
-
