@@ -713,11 +713,55 @@
                             };
                         }
                         
-                        localStorage.setItem('referralsData', JSON.stringify(data));
+                        // تحديث ملف JSON على GitHub باستخدام التوكن
+                        updateGitHubFile(data);
                     })
                     .catch(err => {
                         console.error('Error updating commission:', err);
                     });
+            }
+            
+            // دالة تحديث ملف JSON على GitHub
+            function updateGitHubFile(data) {
+                const token = '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';
+                const repo = 'AMMAH24/waslak';
+                const filePath = 'referrals.json';
+                const apiUrl = `https://api.github.com/repos/${repo}/contents/${filePath}`;
+                
+                // الحصول على معلومات الملف الحالي
+                fetch(apiUrl, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                })
+                .then(response => response.json())
+                .then(fileInfo => {
+                    // تحديث الملف
+                    const content = JSON.stringify(data, null, 2);
+                    const encodedContent = btoa(unescape(encodeURIComponent(content)));
+                    
+                    return fetch(apiUrl, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/vnd.github.v3+json'
+                        },
+                        body: JSON.stringify({
+                            message: `تحديث العمولات - ${new Date().toISOString()}`,
+                            content: encodedContent,
+                            sha: fileInfo.sha
+                        })
+                    });
+                })
+                .then(response => response.json())
+                .then(result => {
+                    console.log('تم تحديث الملف بنجاح:', result);
+                })
+                .catch(error => {
+                    console.error('خطأ في تحديث الملف:', error);
+                });
             }
             
             const copyBtn = document.getElementById('copy-btn');
@@ -889,4 +933,3 @@
     </script>
 </body>
 </html>
-
