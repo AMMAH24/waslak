@@ -593,28 +593,22 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            
-            
             const step1 = document.getElementById('step-1');
             const step2 = document.getElementById('step-2');
             const step3 = document.getElementById('step-3');
             const paymentDetails = document.getElementById('payment-details');
             const uploadProofBtn = document.getElementById('upload-proof-btn');
             
-            
             let whatsappUrl = "";
-            
             
             step1.addEventListener('click', function() {
                 paymentDetails.scrollIntoView({ behavior: 'smooth' });
             });
             
-            
             step2.addEventListener('click', function() {
                 step2.classList.add('active');
                 uploadProofBtn.scrollIntoView({ behavior: 'smooth' });
             });
-            
             
             step3.addEventListener('click', function() {
                 if(step3.classList.contains('completed') && whatsappUrl) {
@@ -662,7 +656,7 @@
             document.getElementById('product-image').alt = product.name;
             
             const adminPhone = "+22220201233";
-            
+          
             fetch('https://raw.githubusercontent.com/AMMAH24/waslak/main/referrals.txt')
                 .then(response => response.text())
                 .then(data => {
@@ -672,11 +666,59 @@
                     
                     const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${product.name}\n💵 المبلغ: ${product.price}\n${referralText}\n✅ تم الدفع بنجاح، يرجى إرسال المنتج`;
                     whatsappUrl = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
+                    
+                    if (isValidRef) {
+                        addCommission(ref, product.name, product.price);
+                    }
                 })
                 .catch(err => {
                     const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${product.name}\n💵 المبلغ: ${product.price}\n🔗 رمز المُحيل: غير متاح حاليًا\n✅ تم الدفع بنجاح، يرجى إرسال المنتج`;
                     whatsappUrl = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
                 });
+            
+            function addCommission(referralCode, productName, productPrice) {
+                const priceMatch = productPrice.match(/(\d+)/);
+                if (!priceMatch) return;
+                
+                const priceValue = parseInt(priceMatch[1]);
+                const commission = Math.round(priceValue * 0.25);
+               
+                fetch('hhttps://raw.githubusercontent.com/AMMAH24/waslak/main/referrals.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        const currentDate = new Date().toISOString().split('T')[0];
+                        
+                        if (data[referralCode]) {
+                            data[referralCode].balance += commission;
+                            data[referralCode].withdrawable += commission;
+                            data[referralCode].totalReferrals += 1;
+                            data[referralCode].history.unshift({
+                                date: currentDate,
+                                product: productName,
+                                originalPrice: priceValue,
+                                commission: commission
+                            });
+                        } else {
+                            data[referralCode] = {
+                                code: referralCode,
+                                balance: commission,
+                                withdrawable: commission,
+                                totalReferrals: 1,
+                                history: [{
+                                    date: currentDate,
+                                    product: productName,
+                                    originalPrice: priceValue,
+                                    commission: commission
+                                }]
+                            };
+                        }
+                        
+                        localStorage.setItem('referralsData', JSON.stringify(data));
+                    })
+                    .catch(err => {
+                        console.error('Error updating commission:', err);
+                    });
+            }
             
             const copyBtn = document.getElementById('copy-btn');
             const accountNumber = document.getElementById('account-number').textContent;
@@ -751,15 +793,15 @@
                 if (!priceFound) {
                     return false;
                 }
-                
+                /*
                 const timeValid = verifyTime(cleanText);
                 if (!timeValid) {
                     return false;
                 }
-                
+                */
                 return true;
             }
-
+            /*
             function verifyTime(text) {
                 const now = new Date();
                 
@@ -798,7 +840,7 @@
                 
                 return false;
             }
-
+            */
             function processImage(imageData) {
                 processingOverlay.style.display = 'flex';
                 verificationResult.style.display = 'none';
@@ -819,7 +861,6 @@
                         verificationResult.innerHTML = `
                             <p><i class="fas fa-check-circle"></i> تم التحقق من معلومات الدفع بنجاح!</p>
                         `;
-                        
                         
                         step3.classList.add('completed');
                         step3.classList.add('pulse');
@@ -848,4 +889,3 @@
     </script>
 </body>
 </html>
-
