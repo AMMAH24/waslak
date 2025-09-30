@@ -1,17 +1,3 @@
 {
-  "43437697": {
-    "code": "43437697",
-    "balance": 0,
-    "withdrawable": 0,
-    "totalReferrals": 1,
-    "history": [
-      {
-        "date": "2025-09-30",
-        "product": "الطـريـق إلى الحـريـة المـاليـة",
-        "originalPrice": 120,
-        "commission": 30,
-        "withdraw":30
-      }
-    ]
-  }
+  
 }
