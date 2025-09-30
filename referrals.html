@@ -296,6 +296,11 @@
             font-weight: 700;
         }
         
+        .withdrawal-amount {
+            color: var(--danger-color);
+            font-weight: 700;
+        }
+        
         .footer {
             text-align: center;
             margin-top: 30px;
@@ -343,6 +348,61 @@
             to { transform: rotate(360deg); }
         }
         
+        .withdrawal-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-confirm {
+            background: var(--accent-color);
+            color: white;
+        }
+        
+        .modal-cancel {
+            background: var(--gray-color);
+            color: white;
+        }
+        
         @media (max-width: 768px) {
             .dashboard {
                 grid-template-columns: 1fr;
@@ -356,6 +416,10 @@
             .history-table {
                 display: block;
                 overflow-x: auto;
+            }
+            
+            .modal-buttons {
+                flex-direction: column;
             }
         }
         
@@ -429,6 +493,14 @@
                         <span class="info-value" id="referral-balance">0 أوقية</span>
                     </div>
                     <div class="info-row">
+                        <span class="info-label">الرصيد القابل للسحب:</span>
+                        <span class="info-value" id="referral-withdrawable">0 أوقية</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">المسحوب سابقاً:</span>
+                        <span class="info-value" id="referral-withdrawn">0 أوقية</span>
+                    </div>
+                    <div class="info-row">
                         <span class="info-label">عدد الإحالات الناجحة:</span>
                         <span class="info-value" id="referral-count">0</span>
                     </div>
@@ -440,16 +512,16 @@
             </div>
             
             <div class="section">
-                <h3 class="section-title"><i class="fas fa-history"></i>سجل العمولات</h3>
+                <h3 class="section-title"><i class="fas fa-history"></i>سجل العمولات والسحوبات</h3>
                 
                 <div id="commission-history">
                     <table class="history-table">
                         <thead>
                             <tr>
                                 <th>التاريخ</th>
-                                <th>المنتج</th>
-                                <th>المبلغ الأصلي</th>
-                                <th>العمولة</th>
+                                <th>النوع</th>
+                                <th>الوصف</th>
+                                <th>المبلغ</th>
                             </tr>
                         </thead>
                         <tbody id="commission-history-body">
@@ -458,7 +530,7 @@
                     
                     <div id="empty-history" class="empty-state">
                         <i class="fas fa-file-invoice-dollar"></i>
-                        <p>لا توجد عمولات مسجلة حتى الآن</p>
+                        <p>لا توجد عمولات أو سحوبات مسجلة حتى الآن</p>
                     </div>
                 </div>
             </div>
@@ -467,7 +539,21 @@
     
     <div class="processing-overlay" id="processing-overlay">
         <div class="spinner"></div>
-        <p style="color: white; margin-top: 20px;">جاري تحميل البيانات...</p>
+        <p style="color: white; margin-top: 20px;" id="processing-text">جاري تحميل البيانات...</p>
+    </div>
+    
+    <div class="withdrawal-modal" id="withdrawal-modal">
+        <div class="modal-content">
+            <h3 class="modal-title">تأكيد عملية السحب</h3>
+            <p>هل أنت متأكد أنك تريد سحب <span id="withdrawal-amount">0</span> أوقية؟</p>
+            <p style="color: var(--warning-color); font-size: 0.9rem; margin-top: 10px;">
+                ⚠️ بعد التأكيد، سيتم خصم المبلغ من رصيدك القابل للسحب
+            </p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-cancel" id="cancel-withdrawal">إلغاء</button>
+                <button class="modal-btn modal-confirm" id="confirm-withdrawal">تأكيد السحب</button>
+            </div>
+        </div>
     </div>
     
     <div class="footer">
@@ -475,12 +561,22 @@
     </div>
 
     <script>
+        // إعدادات GitHub API
+        const GITHUB_CONFIG = {
+            owner: 'AMMAH24',
+            repo: 'waslak',
+            path: 'referrals.json',
+            token: 'ghp_your_token_here' // استبدل بـ token الحقيقي
+        };
+
         document.addEventListener('DOMContentLoaded', function() {
             const searchBtn = document.getElementById('search-btn');
             const referralCodeInput = document.getElementById('referral-code-input');
             const referralInfo = document.getElementById('referral-info');
             const referralCodeDisplay = document.getElementById('referral-code-display');
             const referralBalance = document.getElementById('referral-balance');
+            const referralWithdrawable = document.getElementById('referral-withdrawable');
+            const referralWithdrawn = document.getElementById('referral-withdrawn');
             const referralCount = document.getElementById('referral-count');
             const withdrawBtn = document.getElementById('withdraw-btn');
             const totalBalanceElem = document.getElementById('total-balance');
@@ -489,8 +585,15 @@
             const commissionHistoryBody = document.getElementById('commission-history-body');
             const emptyHistory = document.getElementById('empty-history');
             const processingOverlay = document.getElementById('processing-overlay');
+            const processingText = document.getElementById('processing-text');
+            const withdrawalModal = document.getElementById('withdrawal-modal');
+            const withdrawalAmount = document.getElementById('withdrawal-amount');
+            const cancelWithdrawal = document.getElementById('cancel-withdrawal');
+            const confirmWithdrawal = document.getElementById('confirm-withdrawal');
             
             let referralData = {};
+            let currentReferralCode = '';
+            let currentWithdrawableAmount = 0;
             
             function initPage() {
                 emptyHistory.style.display = 'block';
@@ -556,9 +659,13 @@
                         
                         if (referralData[code]) {
                             const data = referralData[code];
+                            currentReferralCode = code;
+                            currentWithdrawableAmount = data.withdrawable || 0;
                             
                             referralCodeDisplay.textContent = data.code;
                             referralBalance.textContent = `${data.balance} أوقية`;
+                            referralWithdrawable.textContent = `${data.withdrawable} أوقية`;
+                            referralWithdrawn.textContent = `${data.withdrawn || 0} أوقية`;
                             referralCount.textContent = data.totalReferrals;
                             
                             updateDashboard({
@@ -572,9 +679,7 @@
                             if (data.withdrawable > 0) {
                                 withdrawBtn.disabled = false;
                                 withdrawBtn.onclick = function() {
-                                    const message = `السلام عليكم، أود سحب رصيد الإحالة الخاص بي\nكود الإحالة: ${data.code}\nالرصيد القابل للسحب: ${data.withdrawable} أوقية\nالرصيد الإجمالي: ${data.balance} أوقية`;
-                                    const whatsappUrl = `https://wa.me/+22220201233?text=${encodeURIComponent(message)}`;
-                                    window.open(whatsappUrl, '_blank');
+                                    showWithdrawalModal(data.withdrawable);
                                 };
                             } else {
                                 withdrawBtn.disabled = true;
@@ -582,8 +687,14 @@
                             
                             referralInfo.classList.add('show');
                         } else {
+                            // إذا كان الكود صحيحًا ولكن لا توجد بيانات عمولة
+                            currentReferralCode = code;
+                            currentWithdrawableAmount = 0;
+                            
                             referralCodeDisplay.textContent = code;
                             referralBalance.textContent = `0 أوقية`;
+                            referralWithdrawable.textContent = `0 أوقية`;
+                            referralWithdrawn.textContent = `0 أوقية`;
                             referralCount.textContent = `0`;
                             
                             updateDashboard({
@@ -604,6 +715,151 @@
                     });
             });
             
+            function showWithdrawalModal(amount) {
+                withdrawalAmount.textContent = amount;
+                withdrawalModal.style.display = 'flex';
+            }
+            
+            cancelWithdrawal.addEventListener('click', function() {
+                withdrawalModal.style.display = 'none';
+            });
+            
+            confirmWithdrawal.addEventListener('click', function() {
+                withdrawalModal.style.display = 'none';
+                processWithdrawal();
+            });
+            
+            async function processWithdrawal() {
+                if (!currentReferralCode || currentWithdrawableAmount <= 0) {
+                    alert('لا يوجد رصيد قابل للسحب');
+                    return;
+                }
+                
+                processingText.textContent = 'جاري معالجة طلب السحب...';
+                processingOverlay.style.display = 'flex';
+                
+                try {
+                    // تحديث البيانات على GitHub
+                    const success = await updateWithdrawalOnGitHub(currentReferralCode, currentWithdrawableAmount);
+                    
+                    if (success) {
+                        // تحديث البيانات المحلية
+                        const data = referralData[currentReferralCode];
+                        data.withdrawn = (data.withdrawn || 0) + currentWithdrawableAmount;
+                        data.withdrawable = 0;
+                        
+                        // إضافة سجل السحب
+                        const currentDate = new Date().toISOString().split('T')[0];
+                        if (!data.history) data.history = [];
+                        data.history.unshift({
+                            date: currentDate,
+                            type: 'سحب',
+                            description: `سحب رصيد إلى واتساب`,
+                            amount: -currentWithdrawableAmount
+                        });
+                        
+                        // تحديث العرض
+                        referralWithdrawable.textContent = `0 أوقية`;
+                        referralWithdrawn.textContent = `${data.withdrawn} أوقية`;
+                        updateDashboard({
+                            balance: data.balance,
+                            withdrawable: 0,
+                            totalReferrals: data.totalReferrals
+                        });
+                        
+                        updateCommissionHistory(data.history);
+                        
+                        withdrawBtn.disabled = true;
+                        
+                        // فتح واتساب
+                        const message = `السلام عليكم، أود سحب رصيد الإحالة الخاص بي\nكود الإحالة: ${currentReferralCode}\nالمبلغ: ${currentWithdrawableAmount} أوقية\nتم خصم المبلغ من الرصيد بنجاح`;
+                        const whatsappUrl = `https://wa.me/+22220201233?text=${encodeURIComponent(message)}`;
+                        window.open(whatsappUrl, '_blank');
+                        
+                        alert('✅ تم خصم المبلغ من رصيدك بنجاح وفتح واتساب');
+                    } else {
+                        alert('❌ تعذر تحديث البيانات على GitHub، يرجى المحاولة لاحقاً');
+                    }
+                } catch (error) {
+                    console.error('Error processing withdrawal:', error);
+                    alert('❌ حدث خطأ أثناء معالجة السحب');
+                } finally {
+                    processingOverlay.style.display = 'none';
+                }
+            }
+            
+            async function updateWithdrawalOnGitHub(referralCode, withdrawalAmount) {
+                try {
+                    // 1. جلب الملف الحالي من GitHub
+                    const getResponse = await fetch(
+                        `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`,
+                        {
+                            headers: {
+                                'Authorization': `token ${GITHUB_CONFIG.token}`,
+                                'Accept': 'application/vnd.github.v3+json'
+                            }
+                        }
+                    );
+                    
+                    if (!getResponse.ok) {
+                        throw new Error(`فشل في جلب الملف: ${getResponse.status}`);
+                    }
+                    
+                    const fileData = await getResponse.json();
+                    const currentContent = JSON.parse(atob(fileData.content));
+                    const sha = fileData.sha;
+                    
+                    // 2. تحديث بيانات السحب
+                    if (currentContent[referralCode]) {
+                        const referral = currentContent[referralCode];
+                        
+                        // خصم المبلغ من الرصيد القابل للسحب وإضافته للمسحوب
+                        referral.withdrawable = 0;
+                        referral.withdrawn = (referral.withdrawn || 0) + withdrawalAmount;
+                        
+                        // إضافة سجل السحب
+                        const currentDate = new Date().toISOString().split('T')[0];
+                        if (!referral.history) referral.history = [];
+                        referral.history.unshift({
+                            date: currentDate,
+                            type: 'سحب',
+                            description: `سحب رصيد إلى واتساب`,
+                            amount: -withdrawalAmount
+                        });
+                    }
+                    
+                    // 3. رفع الملف المحدث
+                    const updateResponse = await fetch(
+                        `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`,
+                        {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': `token ${GITHUB_CONFIG.token}`,
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/vnd.github.v3+json'
+                            },
+                            body: JSON.stringify({
+                                message: `سحب رصيد لـ ${referralCode} - ${withdrawalAmount} أوقية`,
+                                content: btoa(JSON.stringify(currentContent, null, 2)),
+                                sha: sha
+                            })
+                        }
+                    );
+                    
+                    if (!updateResponse.ok) {
+                        throw new Error(`فشل في تحديث الملف: ${updateResponse.status}`);
+                    }
+                    
+                    // تحديث البيانات المحلية
+                    referralData = currentContent;
+                    return true;
+                    
+                } catch (error) {
+                    console.error('GitHub API Error:', error);
+                    return false;
+                }
+            }
+            
             function updateCommissionHistory(history) {
                 if (history && history.length > 0) {
                     emptyHistory.style.display = 'none';
@@ -611,11 +867,14 @@
                     
                     history.forEach(item => {
                         const row = document.createElement('tr');
+                        const amountClass = item.amount > 0 ? 'commission-amount' : 'withdrawal-amount';
+                        const amountSign = item.amount > 0 ? '+' : '';
+                        
                         row.innerHTML = `
                             <td>${item.date}</td>
-                            <td>${item.product}</td>
-                            <td>${item.originalPrice} أوقية</td>
-                            <td class="commission-amount">+${item.commission} أوقية</td>
+                            <td>${item.type || 'عمولة'}</td>
+                            <td>${item.description || item.product || '-'}</td>
+                            <td class="${amountClass}">${amountSign}${item.amount} أوقية</td>
                         `;
                         commissionHistoryBody.appendChild(row);
                     });
