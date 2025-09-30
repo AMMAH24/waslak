@@ -683,7 +683,7 @@
                 const priceValue = parseInt(priceMatch[1]);
                 const commission = Math.round(priceValue * 0.25);
                
-                fetch('hhttps://raw.githubusercontent.com/AMMAH24/waslak/main/referrals.json')
+                fetch('https://raw.githubusercontent.com/AMMAH24/waslak/main/referrals.json')
                     .then(response => response.json())
                     .then(data => {
                         const currentDate = new Date().toISOString().split('T')[0];
@@ -889,3 +889,4 @@
     </script>
 </body>
 </html>
+
