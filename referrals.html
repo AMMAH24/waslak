@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة عمولات الإحالة - وَصْلَكْ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #3b82f6;
+            --accent-color: #22c55e;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --gold-color: #FFD700;
+            --dark-color: #1f2937;
+            --light-color: #f9fafb;
+            --gray-color: #9ca3af;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin: 20px auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            padding: 5px;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            border: 1px solid #e9ecef;
+        }
+        
+        .stat-card.gold {
+            border-top: 4px solid var(--gold-color);
+        }
+        
+        .stat-card.green {
+            border-top: 4px solid var(--accent-color);
+        }
+        
+        .stat-card.blue {
+            border-top: 4px solid var(--primary-color);
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+        
+        .section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: var(--primary-color);
+        }
+        
+        .search-box {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px 0 0 8px;
+            font-size: 1rem;
+            direction: ltr;
+            text-align: center;
+        }
+        
+        .search-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 8px 8px 0;
+            padding: 0 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .search-btn:hover {
+            background: var(--secondary-color);
+        }
+        
+        .referral-info {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+            border: 1px solid #e9ecef;
+        }
+        
+        .referral-info.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .info-value {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .withdraw-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #25D366, #1EBE5D);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .withdraw-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+        }
+        
+        .withdraw-btn:disabled {
+            background: var(--gray-color);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .commission-history {
+            margin-top: 30px;
+        }
+        
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .history-table th {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 15px;
+            text-align: right;
+        }
+        
+        .history-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        
+        .history-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .history-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .commission-amount {
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray-color);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--gray-color);
+        }
+        
+        .processing-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .history-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="images/waslak (1).webp" alt="Waslak Logo">
+            </div>
+            <h1>إدارة عمولات الإحالة</h1>
+            <p>تابع رصيدك واكسب المزيد من خلال إحالة الأصدقاء</p>
+        </div>
+        
+        <div class="content">
+            <div class="dashboard">
+                <div class="stat-card gold">
+                    <div class="stat-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="stat-value" id="total-balance">0 أوقية</div>
+                    <div class="stat-label">إجمالي الرصيد</div>
+                </div>
+                
+                <div class="stat-card green">
+                    <div class="stat-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <div class="stat-value" id="withdrawable-balance">0 أوقية</div>
+                    <div class="stat-label">الرصيد القابل للسحب</div>
+                </div>
+                
+                <div class="stat-card blue">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <div class="stat-value" id="total-referrals">0</div>
+                    <div class="stat-label">إجمالي الإحالات</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3 class="section-title"><i class="fas fa-search"></i>البحث عن كود الإحالة</h3>
+                
+                <div class="search-box">
+                    <input type="text" id="referral-code-input" class="search-input" placeholder="أدخل كود الإحالة الخاص بك">
+                    <button id="search-btn" class="search-btn">بحث</button>
+                </div>
+                
+                <div id="referral-info" class="referral-info">
+                    <div class="info-row">
+                        <span class="info-label">كود الإحالة:</span>
+                        <span class="info-value" id="referral-code-display">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">إجمالي الرصيد:</span>
+                        <span class="info-value" id="referral-balance">0 أوقية</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">عدد الإحالات الناجحة:</span>
+                        <span class="info-value" id="referral-count">0</span>
+                    </div>
+                    
+                    <button id="withdraw-btn" class="withdraw-btn" disabled>
+                        <i class="fab fa-whatsapp"></i> سحب الرصيد عبر واتساب
+                    </button>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3 class="section-title"><i class="fas fa-history"></i>سجل العمولات</h3>
+                
+                <div id="commission-history">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>التاريخ</th>
+                                <th>المنتج</th>
+                                <th>المبلغ الأصلي</th>
+                                <th>العمولة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="commission-history-body">
+                        </tbody>
+                    </table>
+                    
+                    <div id="empty-history" class="empty-state">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <p>لا توجد عمولات مسجلة حتى الآن</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="processing-overlay" id="processing-overlay">
+        <div class="spinner"></div>
+        <p style="color: white; margin-top: 20px;">جاري تحميل البيانات...</p>
+    </div>
+    
+    <div class="footer">
+        <p>© 2025 متجر وَصْلَكْ - جميع الحقوق محفوظة</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchBtn = document.getElementById('search-btn');
+            const referralCodeInput = document.getElementById('referral-code-input');
+            const referralInfo = document.getElementById('referral-info');
+            const referralCodeDisplay = document.getElementById('referral-code-display');
+            const referralBalance = document.getElementById('referral-balance');
+            const referralCount = document.getElementById('referral-count');
+            const withdrawBtn = document.getElementById('withdraw-btn');
+            const totalBalanceElem = document.getElementById('total-balance');
+            const withdrawableBalanceElem = document.getElementById('withdrawable-balance');
+            const totalReferralsElem = document.getElementById('total-referrals');
+            const commissionHistoryBody = document.getElementById('commission-history-body');
+            const emptyHistory = document.getElementById('empty-history');
+            const processingOverlay = document.getElementById('processing-overlay');
+            
+            let referralData = {};
+            
+            function initPage() {
+                emptyHistory.style.display = 'block';
+                commissionHistoryBody.innerHTML = '';
+                
+                updateDashboard({
+                    balance: 0,
+                    withdrawable: 0,
+                    totalReferrals: 0
+                });
+                
+                loadReferralData();
+            }
+            
+            function loadReferralData() {
+                processingOverlay.style.display = 'flex';
+            
+                fetch('https://raw.githubusercontent.com/AMMAH24/waslak/main/referrals.json')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        referralData = data;
+                        processingOverlay.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('خطأ في تحميل بيانات الإحالة من ملف JSON:', error);
+                        
+                        const localData = localStorage.getItem('referralsData');
+                        if (localData) {
+                            referralData = JSON.parse(localData);
+                        }
+                        
+                        processingOverlay.style.display = 'none';
+                    });
+            }
+            
+            function updateDashboard(data) {
+                totalBalanceElem.textContent = `${data.balance} أوقية`;
+                withdrawableBalanceElem.textContent = `${data.withdrawable} أوقية`;
+                totalReferralsElem.textContent = data.totalReferrals;
+            }
+            
+            searchBtn.addEventListener('click', function() {
+                const code = referralCodeInput.value.trim().toUpperCase();
+                
+                if (!code) {
+                    alert('يرجى إدخال كود الإحالة');
+                    return;
+                }
+              
+                fetch('https://raw.githubusercontent.com/AMMAH24/waslak/main/referrals.txt')
+                    .then(response => response.text())
+                    .then(data => {
+                        const validReferralCodes = data.split(/\r?\n/).map(r => r.trim()).filter(r => r !== "");
+                        
+                        if (!validReferralCodes.includes(code)) {
+                            alert('كود الإحالة غير صحيح أو غير موجود');
+                            referralInfo.classList.remove('show');
+                            return;
+                        }
+                        
+                        if (referralData[code]) {
+                            const data = referralData[code];
+                            
+                            referralCodeDisplay.textContent = data.code;
+                            referralBalance.textContent = `${data.balance} أوقية`;
+                            referralCount.textContent = data.totalReferrals;
+                            
+                            updateDashboard({
+                                balance: data.balance,
+                                withdrawable: data.withdrawable,
+                                totalReferrals: data.totalReferrals
+                            });
+                            
+                            updateCommissionHistory(data.history);
+                            
+                            if (data.withdrawable > 0) {
+                                withdrawBtn.disabled = false;
+                                withdrawBtn.onclick = function() {
+                                    const message = `السلام عليكم، أود سحب رصيد الإحالة الخاص بي\nكود الإحالة: ${data.code}\nالرصيد القابل للسحب: ${data.withdrawable} أوقية\nالرصيد الإجمالي: ${data.balance} أوقية`;
+                                    const whatsappUrl = `https://wa.me/+22220201233?text=${encodeURIComponent(message)}`;
+                                    window.open(whatsappUrl, '_blank');
+                                };
+                            } else {
+                                withdrawBtn.disabled = true;
+                            }
+                            
+                            referralInfo.classList.add('show');
+                        } else {
+                            referralCodeDisplay.textContent = code;
+                            referralBalance.textContent = `0 أوقية`;
+                            referralCount.textContent = `0`;
+                            
+                            updateDashboard({
+                                balance: 0,
+                                withdrawable: 0,
+                                totalReferrals: 0
+                            });
+                            
+                            updateCommissionHistory([]);
+                            
+                            withdrawBtn.disabled = true;
+                            referralInfo.classList.add('show');
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error loading referral codes:', err);
+                        alert('تعذر التحقق من كود الإحالة، يرجى المحاولة لاحقاً');
+                    });
+            });
+            
+            function updateCommissionHistory(history) {
+                if (history && history.length > 0) {
+                    emptyHistory.style.display = 'none';
+                    commissionHistoryBody.innerHTML = '';
+                    
+                    history.forEach(item => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${item.date}</td>
+                            <td>${item.product}</td>
+                            <td>${item.originalPrice} أوقية</td>
+                            <td class="commission-amount">+${item.commission} أوقية</td>
+                        `;
+                        commissionHistoryBody.appendChild(row);
+                    });
+                } else {
+                    emptyHistory.style.display = 'block';
+                    commissionHistoryBody.innerHTML = '';
+                }
+            }
+            
+            initPage();
+        });
+    </script>
+</body>
+</html>
