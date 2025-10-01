@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary-color: #2563eb;
@@ -439,6 +440,13 @@
     </style>
 </head>
 <body>
+    <!-- Supabase Configuration -->
+    <script>
+        const SUPABASE_URL = 'https://klblueihifdnlzctmnbt.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtsYmx1ZWloaWZkbmx6Y3RtbmJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNzMyNzAsImV4cCI6MjA3NDg0OTI3MH0.pEsNYTAmvxjoWR5m6kvVsDsQ_7BS7Tc33K1qcAaPGzI';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
     <div class="container">
         <div class="header">
             <div class="logo">
@@ -561,14 +569,6 @@
     </div>
 
     <script>
-        // إعدادات GitHub API
-        const GITHUB_CONFIG = {
-            owner: 'AMMAH24',
-            repo: 'waslak',
-            path: 'referrals.json',
-            token: 'ghp_your_token_here' // استبدل بـ token الحقيقي
-        };
-
         document.addEventListener('DOMContentLoaded', function() {
             const searchBtn = document.getElementById('search-btn');
             const referralCodeInput = document.getElementById('referral-code-input');
@@ -591,7 +591,6 @@
             const cancelWithdrawal = document.getElementById('cancel-withdrawal');
             const confirmWithdrawal = document.getElementById('confirm-withdrawal');
             
-            let referralData = {};
             let currentReferralCode = '';
             let currentWithdrawableAmount = 0;
             
@@ -604,31 +603,105 @@
                     withdrawable: 0,
                     totalReferrals: 0
                 });
-                
-                loadReferralData();
             }
             
-            function loadReferralData() {
+            async function loadReferralData(referralCode) {
                 processingOverlay.style.display = 'flex';
                 
-                // جلب البيانات مباشرة من ملف JSON على GitHub
-                fetch('https://raw.githubusercontent.com/AMMAH24/waslak/main/referrals.json')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
+                try {
+                    // جلب بيانات الإحالة من Supabase
+                    const { data: referral, error } = await supabase
+                        .from('referrals')
+                        .select('*')
+                        .eq('referral_code', referralCode)
+                        .single();
+                    
+                    if (error) {
+                        throw error;
+                    }
+                    
+                    if (referral) {
+                        currentReferralCode = referralCode;
+                        currentWithdrawableAmount = referral.withdrawable || 0;
+                        
+                        referralCodeDisplay.textContent = referral.referral_code;
+                        referralBalance.textContent = `${referral.balance} أوقية`;
+                        referralWithdrawable.textContent = `${referral.withdrawable} أوقية`;
+                        referralWithdrawn.textContent = `${referral.withdrawn || 0} أوقية`;
+                        referralCount.textContent = referral.total_referrals;
+                        
+                        updateDashboard({
+                            balance: referral.balance,
+                            withdrawable: referral.withdrawable,
+                            totalReferrals: referral.total_referrals
+                        });
+                        
+                        await updateCommissionHistory(referralCode);
+                        
+                        if (referral.withdrawable > 0) {
+                            withdrawBtn.disabled = false;
+                            withdrawBtn.onclick = function() {
+                                showWithdrawalModal(referral.withdrawable);
+                            };
+                        } else {
+                            withdrawBtn.disabled = true;
                         }
-                        return response.json();
-                    })
-                    .then(data => {
-                        referralData = data;
-                        processingOverlay.style.display = 'none';
-                        console.log("تم تحميل بيانات الإحالة بنجاح من GitHub");
-                    })
-                    .catch(error => {
-                        console.error('خطأ في تحميل بيانات الإحالة:', error);
-                        processingOverlay.style.display = 'none';
+                        
+                        referralInfo.classList.add('show');
+                    } else {
+                        // إذا كان الكود صحيحًا ولكن لا توجد بيانات عمولة
+                        currentReferralCode = referralCode;
+                        currentWithdrawableAmount = 0;
+                        
+                        referralCodeDisplay.textContent = referralCode;
+                        referralBalance.textContent = `0 أوقية`;
+                        referralWithdrawable.textContent = `0 أوقية`;
+                        referralWithdrawn.textContent = `0 أوقية`;
+                        referralCount.textContent = `0`;
+                        
+                        updateDashboard({
+                            balance: 0,
+                            withdrawable: 0,
+                            totalReferrals: 0
+                        });
+                        
+                        updateCommissionHistory([]);
+                        
+                        withdrawBtn.disabled = true;
+                        referralInfo.classList.add('show');
+                    }
+                    
+                    processingOverlay.style.display = 'none';
+                    
+                } catch (error) {
+                    console.error('خطأ في تحميل بيانات الإحالة:', error);
+                    processingOverlay.style.display = 'none';
+                    
+                    if (error.code === 'PGRST116') {
+                        // لا توجد بيانات لهذا الكود
+                        currentReferralCode = referralCode;
+                        currentWithdrawableAmount = 0;
+                        
+                        referralCodeDisplay.textContent = referralCode;
+                        referralBalance.textContent = `0 أوقية`;
+                        referralWithdrawable.textContent = `0 أوقية`;
+                        referralWithdrawn.textContent = `0 أوقية`;
+                        referralCount.textContent = `0`;
+                        
+                        updateDashboard({
+                            balance: 0,
+                            withdrawable: 0,
+                            totalReferrals: 0
+                        });
+                        
+                        updateCommissionHistory([]);
+                        
+                        withdrawBtn.disabled = true;
+                        referralInfo.classList.add('show');
+                    } else {
                         alert('تعذر تحميل بيانات الإحالة، يرجى المحاولة لاحقاً');
-                    });
+                    }
+                }
             }
             
             function updateDashboard(data) {
@@ -645,74 +718,7 @@
                     return;
                 }
                 
-                // جلب رموز الإحالة الصحيحة من GitHub
-                fetch('https://raw.githubusercontent.com/AMMAH24/waslak/main/referrals.txt')
-                    .then(response => response.text())
-                    .then(data => {
-                        const validReferralCodes = data.split(/\r?\n/).map(r => r.trim()).filter(r => r !== "");
-                        
-                        if (!validReferralCodes.includes(code)) {
-                            alert('كود الإحالة غير صحيح أو غير موجود');
-                            referralInfo.classList.remove('show');
-                            return;
-                        }
-                        
-                        if (referralData[code]) {
-                            const data = referralData[code];
-                            currentReferralCode = code;
-                            currentWithdrawableAmount = data.withdrawable || 0;
-                            
-                            referralCodeDisplay.textContent = data.code;
-                            referralBalance.textContent = `${data.balance} أوقية`;
-                            referralWithdrawable.textContent = `${data.withdrawable} أوقية`;
-                            referralWithdrawn.textContent = `${data.withdrawn || 0} أوقية`;
-                            referralCount.textContent = data.totalReferrals;
-                            
-                            updateDashboard({
-                                balance: data.balance,
-                                withdrawable: data.withdrawable,
-                                totalReferrals: data.totalReferrals
-                            });
-                            
-                            updateCommissionHistory(data.history);
-                            
-                            if (data.withdrawable > 0) {
-                                withdrawBtn.disabled = false;
-                                withdrawBtn.onclick = function() {
-                                    showWithdrawalModal(data.withdrawable);
-                                };
-                            } else {
-                                withdrawBtn.disabled = true;
-                            }
-                            
-                            referralInfo.classList.add('show');
-                        } else {
-                            // إذا كان الكود صحيحًا ولكن لا توجد بيانات عمولة
-                            currentReferralCode = code;
-                            currentWithdrawableAmount = 0;
-                            
-                            referralCodeDisplay.textContent = code;
-                            referralBalance.textContent = `0 أوقية`;
-                            referralWithdrawable.textContent = `0 أوقية`;
-                            referralWithdrawn.textContent = `0 أوقية`;
-                            referralCount.textContent = `0`;
-                            
-                            updateDashboard({
-                                balance: 0,
-                                withdrawable: 0,
-                                totalReferrals: 0
-                            });
-                            
-                            updateCommissionHistory([]);
-                            
-                            withdrawBtn.disabled = true;
-                            referralInfo.classList.add('show');
-                        }
-                    })
-                    .catch(err => {
-                        console.error('Error loading referral codes:', err);
-                        alert('تعذر التحقق من كود الإحالة، يرجى المحاولة لاحقاً');
-                    });
+                loadReferralData(code);
             });
             
             function showWithdrawalModal(amount) {
@@ -739,35 +745,15 @@
                 processingOverlay.style.display = 'flex';
                 
                 try {
-                    // تحديث البيانات على GitHub
-                    const success = await updateWithdrawalOnGitHub(currentReferralCode, currentWithdrawableAmount);
+                    // تحديث البيانات على Supabase
+                    const success = await processWithdrawalOnSupabase(currentReferralCode, currentWithdrawableAmount);
                     
                     if (success) {
-                        // تحديث البيانات المحلية
-                        const data = referralData[currentReferralCode];
-                        data.withdrawn = (data.withdrawn || 0) + currentWithdrawableAmount;
-                        data.withdrawable = 0;
-                        
-                        // إضافة سجل السحب
-                        const currentDate = new Date().toISOString().split('T')[0];
-                        if (!data.history) data.history = [];
-                        data.history.unshift({
-                            date: currentDate,
-                            type: 'سحب',
-                            description: `سحب رصيد إلى واتساب`,
-                            amount: -currentWithdrawableAmount
-                        });
-                        
                         // تحديث العرض
                         referralWithdrawable.textContent = `0 أوقية`;
-                        referralWithdrawn.textContent = `${data.withdrawn} أوقية`;
-                        updateDashboard({
-                            balance: data.balance,
-                            withdrawable: 0,
-                            totalReferrals: data.totalReferrals
-                        });
                         
-                        updateCommissionHistory(data.history);
+                        // إعادة تحميل البيانات
+                        await loadReferralData(currentReferralCode);
                         
                         withdrawBtn.disabled = true;
                         
@@ -778,7 +764,7 @@
                         
                         alert('✅ تم خصم المبلغ من رصيدك بنجاح وفتح واتساب');
                     } else {
-                        alert('❌ تعذر تحديث البيانات على GitHub، يرجى المحاولة لاحقاً');
+                        alert('❌ تعذر تحديث البيانات، يرجى المحاولة لاحقاً');
                     }
                 } catch (error) {
                     console.error('Error processing withdrawal:', error);
@@ -788,97 +774,90 @@
                 }
             }
             
-            async function updateWithdrawalOnGitHub(referralCode, withdrawalAmount) {
+            async function processWithdrawalOnSupabase(referralCode, withdrawalAmount) {
                 try {
-                    // 1. جلب الملف الحالي من GitHub
-                    const getResponse = await fetch(
-                        `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`,
-                        {
-                            headers: {
-                                'Authorization': `token ${GITHUB_CONFIG.token}`,
-                                'Accept': 'application/vnd.github.v3+json'
+                    // الحصول على البيانات الحالية
+                    const { data: referral, error: getError } = await supabase
+                        .from('referrals')
+                        .select('*')
+                        .eq('referral_code', referralCode)
+                        .single();
+                    
+                    if (getError) throw getError;
+                    
+                    // تحديث الرصيد
+                    const { error: updateError } = await supabase
+                        .from('referrals')
+                        .update({
+                            withdrawable: 0,
+                            withdrawn: (referral.withdrawn || 0) + withdrawalAmount,
+                            updated_at: new Date()
+                        })
+                        .eq('referral_code', referralCode);
+                    
+                    if (updateError) throw updateError;
+                    
+                    // إضافة سجل السحب
+                    const currentDate = new Date().toISOString().split('T')[0];
+                    const { error: historyError } = await supabase
+                        .from('commission_history')
+                        .insert([
+                            {
+                                referral_code: referralCode,
+                                date: currentDate,
+                                type: 'withdrawal',
+                                product_name: 'سحب رصيد',
+                                original_price: 0,
+                                commission: -withdrawalAmount
                             }
-                        }
-                    );
+                        ]);
                     
-                    if (!getResponse.ok) {
-                        throw new Error(`فشل في جلب الملف: ${getResponse.status}`);
-                    }
+                    if (historyError) throw historyError;
                     
-                    const fileData = await getResponse.json();
-                    const currentContent = JSON.parse(atob(fileData.content));
-                    const sha = fileData.sha;
-                    
-                    // 2. تحديث بيانات السحب
-                    if (currentContent[referralCode]) {
-                        const referral = currentContent[referralCode];
-                        
-                        // خصم المبلغ من الرصيد القابل للسحب وإضافته للمسحوب
-                        referral.withdrawable = 0;
-                        referral.withdrawn = (referral.withdrawn || 0) + withdrawalAmount;
-                        
-                        // إضافة سجل السحب
-                        const currentDate = new Date().toISOString().split('T')[0];
-                        if (!referral.history) referral.history = [];
-                        referral.history.unshift({
-                            date: currentDate,
-                            type: 'سحب',
-                            description: `سحب رصيد إلى واتساب`,
-                            amount: -withdrawalAmount
-                        });
-                    }
-                    
-                    // 3. رفع الملف المحدث
-                    const updateResponse = await fetch(
-                        `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`,
-                        {
-                            method: 'PUT',
-                            headers: {
-                                'Authorization': `token ${GITHUB_CONFIG.token}`,
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/vnd.github.v3+json'
-                            },
-                            body: JSON.stringify({
-                                message: `سحب رصيد لـ ${referralCode} - ${withdrawalAmount} أوقية`,
-                                content: btoa(JSON.stringify(currentContent, null, 2)),
-                                sha: sha
-                            })
-                        }
-                    );
-                    
-                    if (!updateResponse.ok) {
-                        throw new Error(`فشل في تحديث الملف: ${updateResponse.status}`);
-                    }
-                    
-                    // تحديث البيانات المحلية
-                    referralData = currentContent;
                     return true;
                     
                 } catch (error) {
-                    console.error('GitHub API Error:', error);
+                    console.error('Supabase Error:', error);
                     return false;
                 }
             }
             
-            function updateCommissionHistory(history) {
-                if (history && history.length > 0) {
-                    emptyHistory.style.display = 'none';
-                    commissionHistoryBody.innerHTML = '';
+            async function updateCommissionHistory(referralCode) {
+                try {
+                    const { data: history, error } = await supabase
+                        .from('commission_history')
+                        .select('*')
+                        .eq('referral_code', referralCode)
+                        .order('created_at', { ascending: false });
                     
-                    history.forEach(item => {
-                        const row = document.createElement('tr');
-                        const amountClass = item.amount > 0 ? 'commission-amount' : 'withdrawal-amount';
-                        const amountSign = item.amount > 0 ? '+' : '';
+                    if (error) throw error;
+                    
+                    if (history && history.length > 0) {
+                        emptyHistory.style.display = 'none';
+                        commissionHistoryBody.innerHTML = '';
                         
-                        row.innerHTML = `
-                            <td>${item.date}</td>
-                            <td>${item.type || 'عمولة'}</td>
-                            <td>${item.description || item.product || '-'}</td>
-                            <td class="${amountClass}">${amountSign}${item.amount} أوقية</td>
-                        `;
-                        commissionHistoryBody.appendChild(row);
-                    });
-                } else {
+                        history.forEach(item => {
+                            const row = document.createElement('tr');
+                            const amountClass = item.commission > 0 ? 'commission-amount' : 'withdrawal-amount';
+                            const amountSign = item.commission > 0 ? '+' : '';
+                            const type = item.type === 'withdrawal' ? 'سحب' : 'عمولة';
+                            const description = item.product_name || '-';
+                            
+                            row.innerHTML = `
+                                <td>${item.date}</td>
+                                <td>${type}</td>
+                                <td>${description}</td>
+                                <td class="${amountClass}">${amountSign}${item.commission} أوقية</td>
+                            `;
+                            commissionHistoryBody.appendChild(row);
+                        });
+                    } else {
+                        emptyHistory.style.display = 'block';
+                        commissionHistoryBody.innerHTML = '';
+                    }
+                    
+                } catch (error) {
+                    console.error('Error loading commission history:', error);
                     emptyHistory.style.display = 'block';
                     commissionHistoryBody.innerHTML = '';
                 }
