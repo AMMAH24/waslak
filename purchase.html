@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary-color: #2563eb;
@@ -498,6 +499,13 @@
     </style>
 </head>
 <body>
+    <!-- Supabase Configuration -->
+    <script>
+        const SUPABASE_URL = 'https://klblueihifdnlzctmnbt.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtsYmx1ZWloaWZkbmx6Y3RtbmJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNzMyNzAsImV4cCI6MjA3NDg0OTI3MH0.pEsNYTAmvxjoWR5m6kvVsDsQ_7BS7Tc33K1qcAaPGzI';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
     <div class="container">
         <div class="header">
             <div class="logo">
@@ -656,112 +664,120 @@
             document.getElementById('product-image').alt = product.name;
             
             const adminPhone = "+22220201233";
-          
-            fetch('https://raw.githubusercontent.com/AMMAH24/waslak/main/referrals.txt')
-                .then(response => response.text())
-                .then(data => {
-                    const validRefs = data.split(/\r?\n/).map(r => r.trim()).filter(r => r !== "");
-                    const isValidRef = ref && validRefs.includes(ref);
-                    const referralText = isValidRef ? `🔗 رمز المُحيل: ${ref}` : `🔗 رمز المُحيل: غير صالح`;
-                    
-                    const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${product.name}\n💵 المبلغ: ${product.price}\n${referralText}\n✅ تم الدفع بنجاح، يرجى إرسال المنتج`;
-                    whatsappUrl = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
-                    
-                    if (isValidRef) {
-                        addCommission(ref, product.name, product.price);
-                    }
-                })
-                .catch(err => {
-                    const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${product.name}\n💵 المبلغ: ${product.price}\n🔗 رمز المُحيل: غير متاح حاليًا\n✅ تم الدفع بنجاح، يرجى إرسال المنتج`;
-                    whatsappUrl = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
-                });
             
-            function addCommission(referralCode, productName, productPrice) {
-                const priceMatch = productPrice.match(/(\d+)/);
-                if (!priceMatch) return;
-                
-                const priceValue = parseInt(priceMatch[1]);
-                const commission = Math.round(priceValue * 0.25);
-               
-                fetch('https://raw.githubusercontent.com/AMMAH24/waslak/main/referrals.json')
-                    .then(response => response.json())
-                    .then(data => {
-                        const currentDate = new Date().toISOString().split('T')[0];
-                        
-                        if (data[referralCode]) {
-                            data[referralCode].balance += commission;
-                            data[referralCode].withdrawable += commission;
-                            data[referralCode].totalReferrals += 1;
-                            data[referralCode].history.unshift({
-                                date: currentDate,
-                                product: productName,
-                                originalPrice: priceValue,
-                                commission: commission
-                            });
-                        } else {
-                            data[referralCode] = {
-                                code: referralCode,
-                                balance: commission,
-                                withdrawable: commission,
-                                totalReferrals: 1,
-                                history: [{
-                                    date: currentDate,
-                                    product: productName,
-                                    originalPrice: priceValue,
-                                    commission: commission
-                                }]
-                            };
-                        }
-                        
-                        // تحديث ملف JSON على GitHub باستخدام التوكن
-                        updateGitHubFile(data);
-                    })
-                    .catch(err => {
-                        console.error('Error updating commission:', err);
-                    });
+            // التحقق من صحة كود الإحالة باستخدام Supabase
+            async function validateReferralCode(referralCode) {
+                try {
+                    const { data, error } = await supabase
+                        .from('referrals')
+                        .select('referral_code')
+                        .eq('referral_code', referralCode)
+                        .single();
+                    
+                    if (error || !data) {
+                        return false;
+                    }
+                    return true;
+                } catch (err) {
+                    console.error('Error validating referral code:', err);
+                    return false;
+                }
             }
             
-            // دالة تحديث ملف JSON على GitHub
-            function updateGitHubFile(data) {
-                const token = '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';
-                const repo = 'AMMAH24/waslak';
-                const filePath = 'referrals.json';
-                const apiUrl = `https://api.github.com/repos/${repo}/contents/${filePath}`;
+            async function initializeWhatsappMessage() {
+                let referralText = '🔗 رمز المُحيل: غير مستخدم';
                 
-                // الحصول على معلومات الملف الحالي
-                fetch(apiUrl, {
-                    headers: {
-                        'Authorization': `token ${token}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                })
-                .then(response => response.json())
-                .then(fileInfo => {
-                    // تحديث الملف
-                    const content = JSON.stringify(data, null, 2);
-                    const encodedContent = btoa(unescape(encodeURIComponent(content)));
+                if (ref) {
+                    const isValidRef = await validateReferralCode(ref);
+                    referralText = isValidRef ? `🔗 رمز المُحيل: ${ref}` : `🔗 رمز المُحيل: غير صالح`;
                     
-                    return fetch(apiUrl, {
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': `token ${token}`,
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/vnd.github.v3+json'
-                        },
-                        body: JSON.stringify({
-                            message: `تحديث العمولات - ${new Date().toISOString()}`,
-                            content: encodedContent,
-                            sha: fileInfo.sha
-                        })
-                    });
-                })
-                .then(response => response.json())
-                .then(result => {
-                    console.log('تم تحديث الملف بنجاح:', result);
-                })
-                .catch(error => {
-                    console.error('خطأ في تحديث الملف:', error);
-                });
+                    if (isValidRef) {
+                        await addCommission(ref, product.name, product.price);
+                    }
+                }
+                
+                const message = `السلام عليكم، لقد قمت بشراء:\n📘 ${product.name}\n💵 المبلغ: ${product.price}\n${referralText}\n✅ تم الدفع بنجاح، يرجى إرسال المنتج`;
+                whatsappUrl = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
+            }
+            
+            initializeWhatsappMessage();
+            
+            async function addCommission(referralCode, productName, productPrice) {
+                try {
+                    const priceMatch = productPrice.match(/(\d+)/);
+                    if (!priceMatch) return;
+                    
+                    const priceValue = parseInt(priceMatch[1]);
+                    const commission = Math.round(priceValue * 0.25);
+                    const currentDate = new Date().toISOString().split('T')[0];
+                    
+                    // التحقق من وجود كود الإحالة
+                    let { data: referral, error } = await supabase
+                        .from('referrals')
+                        .select('*')
+                        .eq('referral_code', referralCode)
+                        .single();
+                    
+                    if (error || !referral) {
+                        // إنشاء كود إحالة جديد
+                        const { data: newReferral, error: createError } = await supabase
+                            .from('referrals')
+                            .insert([
+                                {
+                                    referral_code: referralCode,
+                                    balance: commission,
+                                    withdrawable: commission,
+                                    total_referrals: 1
+                                }
+                            ])
+                            .select();
+                        
+                        if (createError) {
+                            console.error('Error creating referral:', createError);
+                            return;
+                        }
+                        referral = newReferral[0];
+                    } else {
+                        // تحديث كود الإحالة الموجود
+                        const { error: updateError } = await supabase
+                            .from('referrals')
+                            .update({
+                                balance: referral.balance + commission,
+                                withdrawable: referral.withdrawable + commission,
+                                total_referrals: referral.total_referrals + 1,
+                                updated_at: new Date()
+                            })
+                            .eq('referral_code', referralCode);
+                        
+                        if (updateError) {
+                            console.error('Error updating referral:', updateError);
+                            return;
+                        }
+                    }
+                    
+                    // إضافة سجل العمولة
+                    const { error: historyError } = await supabase
+                        .from('commission_history')
+                        .insert([
+                            {
+                                referral_code: referralCode,
+                                date: currentDate,
+                                product_name: productName,
+                                original_price: priceValue,
+                                commission: commission,
+                                type: 'commission'
+                            }
+                        ]);
+                    
+                    if (historyError) {
+                        console.error('Error adding commission history:', historyError);
+                    }
+                    
+                    console.log('Commission added successfully for:', referralCode);
+                    
+                } catch (err) {
+                    console.error('Error in addCommission:', err);
+                }
             }
             
             const copyBtn = document.getElementById('copy-btn');
@@ -837,15 +853,15 @@
                 if (!priceFound) {
                     return false;
                 }
-                
+                /*
                 const timeValid = verifyTime(cleanText);
                 if (!timeValid) {
                     return false;
                 }
-                
+                */
                 return true;
             }
-            
+            /*
             function verifyTime(text) {
                 const now = new Date();
                 
@@ -884,7 +900,7 @@
                 
                 return false;
             }
-            
+            */
             function processImage(imageData) {
                 processingOverlay.style.display = 'flex';
                 verificationResult.style.display = 'none';
@@ -933,6 +949,3 @@
     </script>
 </body>
 </html>
-
-
-
