@@ -10,7 +10,6 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://ammah24.github.io/waslak/waslak.jpg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>وَصْلَكْ - منصة للكتب الرقمية و المنتجات الجديدة و المستعملة</title>
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-43H2GVPJM5"></script>
@@ -18,9 +17,9 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-43H2GVPJM5');
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -407,6 +406,12 @@
     </style>
 </head>
 <body>
+    <!-- Supabase Configuration -->
+    <script>
+        const SUPABASE_URL = 'https://klblueihifdnlzctmnbt.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtsYmx1ZWloaWZkbmx6Y3RtbmJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNzMyNzAsImV4cCI6MjA3NDg0OTI3MH0.pEsNYTAmvxjoWR5m6kvVsDsQ_7BS7Tc33K1qcAaPGzI';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
  
     <nav class="navbar">
         <div class="logo">
@@ -739,22 +744,4 @@
         }
     </script>
 </body>
-
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
