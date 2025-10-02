@@ -853,37 +853,29 @@
             const priceDiv = document.createElement('div');
             priceDiv.className = 'product-price';
         
-            // Apply offer discount if available - FIXED UUID COMPARISON
+            // Apply offer discount if available - FIXED UUID COMPARISON            const isProductInOffer = activeOffer && activeOffer.products && activeOffer.products.map(id => id.toString()).includes(product.id.toString());
             let displayPrice = product.current_price;
-            let isProductInOffer = false;
-            
-            if (activeOffer && activeOffer.discount_percentage && activeOffer.products) {
-                // Convert both to strings for comparison
-                const offerProductIds = activeOffer.products.map(id => id.toString());
-                const productIdStr = product.id.toString();
-                isProductInOffer = offerProductIds.includes(productIdStr);
-                
-                if (isProductInOffer) {
-                    const discount = activeOffer.discount_percentage;
-                    displayPrice = product.current_price * (1 - discount / 100);
-                    
-                    const originalPrice = document.createElement('span');
-                    originalPrice.className = 'old-price';
-                    originalPrice.textContent = `${product.current_price} أوقية`;
-                    priceDiv.appendChild(originalPrice);
-        
-                    const discountBadge = document.createElement('span');
-                    discountBadge.className = 'discount-badge';
-                    discountBadge.textContent = `خصم ${discount}%`;
-                    priceDiv.appendChild(discountBadge);
-                }
+            let finalPrice = product.current_price;
+
+            if (isProductInOffer && activeOffer.discount_percentage) {
+                finalPrice = Math.round(product.current_price * (1 - (activeOffer.discount_percentage || 0) / 100));
+                displayPrice = finalPrice;
+
+                const oldPriceSpan = document.createElement('span');
+                oldPriceSpan.className = 'old-price';
+                oldPriceSpan.textContent = `${product.current_price} أوقية`;
+                priceDiv.appendChild(oldPriceSpan);
+
+                const discountBadge = document.createElement('span');
+                discountBadge.className = 'discount-badge';
+                discountBadge.textContent = `-${activeOffer.discount_percentage}%`;
+                priceDiv.appendChild(discountBadge);
             }
-        
-            // Current price
-            const currentPrice = document.createElement('span');
-            currentPrice.className = 'current-price';
-            currentPrice.textContent = `${Math.round(displayPrice)} أوقية`;
-            priceDiv.appendChild(currentPrice);
+
+            const currentPriceSpan = document.createElement("span");
+            currentPriceSpan.className = "current-price";
+            currentPriceSpan.textContent = `${displayPrice} أوقية`;
+            priceDiv.appendChild(currentPriceSpan);
         
             // Show original discount if no active offer discount applied
             if (!isProductInOffer && product.old_price && product.old_price > product.current_price) {
