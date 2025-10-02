@@ -895,9 +895,7 @@
         
             // Buy button
             const buyBtn = document.createElement('a');
-            const finalPrice = isProductInOffer ? 
-                Math.round(product.current_price * (1 - (activeOffer.discount_percentage || 0) / 100)) : 
-                product.current_price;
+
                 
             buyBtn.href = `purchase.html?product=${product.id}&price=${finalPrice}&offer=${activeOffer ? activeOffer.id : ''}`;
             buyBtn.className = 'buy-btn';
