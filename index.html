@@ -606,9 +606,9 @@
                     .gte('end_time', now)
                     .order('created_at', { ascending: false })
                     .limit(1);
-
+        
                 if (error) throw error;
-
+        
                 const container = document.getElementById('offer-banner-container');
                 
                 if (!offers || offers.length === 0) {
@@ -621,11 +621,11 @@
                     `;
                     return null;
                 }
-
+        
                 const offer = offers[0];
                 renderOfferBanner(offer);
                 return offer;
-
+        
             } catch (error) {
                 console.error('Error loading offer:', error);
                 const container = document.getElementById('offer-banner-container');
@@ -633,7 +633,7 @@
                 return null;
             }
         }
-
+        
         function renderOfferBanner(offer) {
             const container = document.getElementById('offer-banner-container');
             const backgroundColor = offer.background_color || '#ff6b6b';
@@ -652,16 +652,15 @@
                     </div>
                 </div>
             `;
-
+        
             // Start countdown for this specific offer
             startOfferCountdown(offer);
         }
-
+        
         function adjustColor(color, amount) {
-            // Simple color adjustment for gradient
-            return color; // In a real implementation, you'd adjust the color
+            return color; // Simple implementation
         }
-
+        
         function formatTimeRemaining(endTime) {
             const end = new Date(endTime);
             const now = new Date();
@@ -675,35 +674,31 @@
             
             return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
-
+        
         function startOfferCountdown(offer) {
             const countdownElement = document.getElementById("countdown");
             const offerBanner = document.querySelector('.offer-banner');
             const renewalNotice = document.getElementById("renewal-notice");
-            const nextOfferTimer = document.getElementById("next-offer-timer");
-
+        
             function updateTimer() {
                 const now = new Date();
                 const endTime = new Date(offer.end_time);
                 const timeLeft = endTime - now;
-
+        
                 if (timeLeft <= 0) {
-                    // Offer ended
                     countdownElement.textContent = "انتهى العرض!";
                     offerBanner.classList.add('inactive');
                     renewalNotice.style.display = "block";
                     
-                    // Check for new offers every minute after current offer ends
                     setTimeout(() => {
                         loadActiveOffer().then(newOffer => {
                             if (newOffer) {
                                 loadProducts(newOffer);
                             }
                         });
-                    }, 60000); // Check after 1 minute
+                    }, 60000);
                     
                 } else {
-                    // Update countdown
                     const hours = Math.floor(timeLeft / (1000 * 60 * 60));
                     const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
                     const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
@@ -711,33 +706,31 @@
                     countdownElement.textContent = `ينتهي خلال: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 }
             }
-
-            // Initialize and update timer every second
+        
             updateTimer();
             const timerInterval = setInterval(updateTimer, 1000);
             
-            // Clear interval when offer ends
             setTimeout(() => {
                 clearInterval(timerInterval);
             }, new Date(offer.end_time) - new Date() + 1000);
         }
-
+        
         async function loadProducts(activeOffer = null) {
             try {
                 // Show loading state
                 document.getElementById('special-offers-grid').innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner"></i> جاري تحميل العروض الخاصة...</div>';
                 document.getElementById('books-grid').innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner"></i> جاري تحميل الكتب...</div>';
                 document.getElementById('products-grid').innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner"></i> جاري تحميل المنتجات...</div>';
-
+        
                 // Load all products from database
                 const { data: products, error } = await supabase
                     .from('products')
                     .select('*')
                     .eq('is_active', true)
                     .order('created_at', { ascending: false });
-
+        
                 if (error) throw error;
-
+        
                 // If no products found, show message
                 if (!products || products.length === 0) {
                     document.getElementById('special-offers-grid').innerHTML = '<div class="error-message">لا توجد عروض خاصة حالياً</div>';
@@ -745,31 +738,43 @@
                     document.getElementById('products-grid').innerHTML = '<div class="error-message">لا توجد منتجات متاحة حالياً</div>';
                     return;
                 }
-
-                // Filter products based on active offer
+        
+                console.log('Loaded products:', products); // Debug log
+        
+                // Filter products based on active offer - FIXED UUID COMPARISON
                 let specialOffers = [];
-                if (activeOffer && activeOffer.products) {
-                    // Show products from the active offer
-                    const offerProductIds = activeOffer.products;
-                    specialOffers = products.filter(product => 
-                        offerProductIds.includes(product.id)
-                    );
-                } else {
-                    // Fallback: show products with category 'special_offer' or with discounts
+                if (activeOffer && activeOffer.products && activeOffer.products.length > 0) {
+                    console.log('Active offer products:', activeOffer.products); // Debug log
+                    
+                    // Convert both to strings for comparison to handle UUIDs properly
+                    const offerProductIds = activeOffer.products.map(id => id.toString());
+                    specialOffers = products.filter(product => {
+                        const productIdStr = product.id.toString();
+                        const isIncluded = offerProductIds.includes(productIdStr);
+                        console.log(`Product ${productIdStr} in offer: ${isIncluded}`); // Debug log
+                        return isIncluded;
+                    });
+                    
+                    console.log('Filtered special offers:', specialOffers); // Debug log
+                }
+        
+                // If no products found in offer, show some fallback products
+                if (specialOffers.length === 0) {
+                    console.log('No products in offer, showing fallback products'); // Debug log
                     specialOffers = products.filter(product => 
                         product.category === 'special_offer' || 
                         (product.old_price && product.current_price && product.old_price > product.current_price)
-                    );
+                    ).slice(0, 3);
                 }
-
+        
                 const books = products.filter(product => product.category === 'book');
                 const otherProducts = products.filter(product => product.category === 'product');
-
+        
                 // Render products in respective sections
                 renderProducts(specialOffers, 'special-offers-grid', activeOffer);
                 renderProducts(books, 'books-grid');
                 renderProducts(otherProducts, 'products-grid');
-
+        
             } catch (error) {
                 console.error('Error loading products:', error);
                 document.getElementById('special-offers-grid').innerHTML = '<div class="error-message">حدث خطأ في تحميل العروض الخاصة. يرجى المحاولة مرة أخرى.</div>';
@@ -777,31 +782,31 @@
                 document.getElementById('products-grid').innerHTML = '<div class="error-message">حدث خطأ في تحميل المنتجات. يرجى المحاولة مرة أخرى.</div>';
             }
         }
-
+        
         function renderProducts(products, containerId, activeOffer = null) {
             const container = document.getElementById(containerId);
             if (!container) return;
-
+        
             // Clear container
             container.innerHTML = '';
-
+        
             // If no products, show message
             if (!products || products.length === 0) {
                 container.innerHTML = '<div class="error-message">لا توجد عناصر لعرضها حالياً</div>';
                 return;
             }
-
+        
             // Create product cards
             products.forEach(product => {
                 const productCard = createProductCard(product, containerId, activeOffer);
                 container.appendChild(productCard);
             });
         }
-
+        
         function createProductCard(product, containerId, activeOffer = null) {
             const card = document.createElement('div');
             card.className = 'product-card';
-
+        
             // Add offer tag for products in home section
             if (containerId === 'special-offers-grid') {
                 const offerTag = document.createElement('div');
@@ -809,7 +814,7 @@
                 offerTag.textContent = 'عرض خاص';
                 card.appendChild(offerTag);
             }
-
+        
             // Add ribbon if product has one
             if (product.ribbon) {
                 const ribbon = document.createElement('div');
@@ -817,7 +822,7 @@
                 ribbon.textContent = product.ribbon;
                 card.appendChild(ribbon);
             }
-
+        
             // Product image
             const img = document.createElement('img');
             img.src = product.image_url || 'images/placeholder.jpg';
@@ -827,69 +832,78 @@
                 this.src = 'images/placeholder.jpg';
             };
             card.appendChild(img);
-
+        
             // Product info container
             const info = document.createElement('div');
             info.className = 'product-info';
-
+        
             // Product title
             const title = document.createElement('h3');
             title.className = 'product-title';
             title.textContent = product.name;
             info.appendChild(title);
-
+        
             // Product description
             const description = document.createElement('p');
             description.className = 'product-description';
             description.textContent = product.description;
             info.appendChild(description);
-
+        
             // Product price section
             const priceDiv = document.createElement('div');
             priceDiv.className = 'product-price';
-
-            // Apply offer discount if available
+        
+            // Apply offer discount if available - FIXED UUID COMPARISON
             let displayPrice = product.current_price;
-            if (activeOffer && activeOffer.discount_percentage && activeOffer.products.includes(product.id)) {
-                const discount = activeOffer.discount_percentage;
-                displayPrice = product.current_price * (1 - discount / 100);
+            let isProductInOffer = false;
+            
+            if (activeOffer && activeOffer.discount_percentage && activeOffer.products) {
+                // Convert both to strings for comparison
+                const offerProductIds = activeOffer.products.map(id => id.toString());
+                const productIdStr = product.id.toString();
+                isProductInOffer = offerProductIds.includes(productIdStr);
                 
-                const originalPrice = document.createElement('span');
-                originalPrice.className = 'old-price';
-                originalPrice.textContent = `${product.current_price} أوقية`;
-                priceDiv.appendChild(originalPrice);
-
-                const discountBadge = document.createElement('span');
-                discountBadge.className = 'discount-badge';
-                discountBadge.textContent = `خصم ${discount}%`;
-                priceDiv.appendChild(discountBadge);
+                if (isProductInOffer) {
+                    const discount = activeOffer.discount_percentage;
+                    displayPrice = product.current_price * (1 - discount / 100);
+                    
+                    const originalPrice = document.createElement('span');
+                    originalPrice.className = 'old-price';
+                    originalPrice.textContent = `${product.current_price} أوقية`;
+                    priceDiv.appendChild(originalPrice);
+        
+                    const discountBadge = document.createElement('span');
+                    discountBadge.className = 'discount-badge';
+                    discountBadge.textContent = `خصم ${discount}%`;
+                    priceDiv.appendChild(discountBadge);
+                }
             }
-
+        
             // Current price
             const currentPrice = document.createElement('span');
             currentPrice.className = 'current-price';
             currentPrice.textContent = `${Math.round(displayPrice)} أوقية`;
             priceDiv.appendChild(currentPrice);
-
-            // Show original discount if no active offer
-            if (!activeOffer && product.old_price && product.old_price > product.current_price) {
+        
+            // Show original discount if no active offer discount applied
+            if (!isProductInOffer && product.old_price && product.old_price > product.current_price) {
                 const oldPrice = document.createElement('span');
                 oldPrice.className = 'old-price';
                 oldPrice.textContent = `${product.old_price} أوقية`;
                 priceDiv.appendChild(oldPrice);
-
+        
                 const discount = Math.round(((product.old_price - product.current_price) / product.old_price) * 100);
                 const discountBadge = document.createElement('span');
                 discountBadge.className = 'discount-badge';
                 discountBadge.textContent = `خصم ${discount}%`;
                 priceDiv.appendChild(discountBadge);
             }
-
+        
             info.appendChild(priceDiv);
-
+        
             // Buy button
             const buyBtn = document.createElement('a');
-            const finalPrice = activeOffer && activeOffer.products.includes(product.id) ? 
+            const finalPrice = isProductInOffer ? 
                 Math.round(product.current_price * (1 - (activeOffer.discount_percentage || 0) / 100)) : 
                 product.current_price;
                 
@@ -901,7 +915,7 @@
             card.appendChild(info);
             return card;
         }
-
+        
         // Navigation functions
         function showSection(sectionId) {
             document.querySelectorAll('.section').forEach(section => {
@@ -918,7 +932,7 @@
                 activeLink.classList.add('active');
             }
         }
-
+        
         // Initialize the page
         document.addEventListener('DOMContentLoaded', async function() {
             // Load active offer first
@@ -950,3 +964,4 @@
     </script>
 </body>
 </html>
+
