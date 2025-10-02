@@ -410,7 +410,8 @@
     <script>
         const SUPABASE_URL = 'https://klblueihifdnlzctmnbt.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtsYmx1ZWloaWZkbmx6Y3RtbmJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNzMyNzAsImV4cCI6MjA3NDg0OTI3MH0.pEsNYTAmvxjoWR5m6kvVsDsQ_7BS7Tc33K1qcAaPGzI';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     </script>
  
     <nav class="navbar">
@@ -745,3 +746,4 @@
     </script>
 </body>
 </html>
+
