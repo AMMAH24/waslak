@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -125,24 +124,74 @@
             gap: 10px;
         }
         
+        /* Offer Banner Styles */
         .offer-banner {
-            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
             color: white;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 20px;
+            border-radius: 12px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
             transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .offer-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
         
         .offer-banner.inactive {
             background: linear-gradient(135deg, #9ca3af, #6b7280);
         }
         
-        .countdown-timer {
-            font-size: 1.5rem;
+        .offer-banner-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .offer-title {
+            font-size: 1.8rem;
             font-weight: 700;
-            margin: 10px 0;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        .offer-description {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+        
+        .countdown-timer {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 15px 0;
+            direction: ltr;
+        }
+        
+        .offer-discount {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 10px;
+            backdrop-filter: blur(10px);
         }
         
         .products-grid {
@@ -342,6 +391,38 @@
             margin: 20px 0;
         }
         
+        .no-offer-message {
+            background: linear-gradient(135deg, #9ca3af, #6b7280);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .offer-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, var(--danger-color), #ff6b6b);
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 4px;
+            z-index: 10;
+        }
+        
+        .renewal-notice {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+        
         @media (max-width: 768px) {
             .navbar {
                 flex-direction: column;
@@ -361,6 +442,14 @@
             .section {
                 padding: 15px;
             }
+            
+            .offer-title {
+                font-size: 1.4rem;
+            }
+            
+            .countdown-timer {
+                font-size: 1.3rem;
+            }
         }
         
         @media (max-width: 480px) {
@@ -374,6 +463,14 @@
             
             .section-title {
                 font-size: 1.5rem;
+            }
+            
+            .offer-title {
+                font-size: 1.2rem;
+            }
+            
+            .countdown-timer {
+                font-size: 1.1rem;
             }
         }
         
@@ -406,17 +503,6 @@
             line-height: 1.8;
             text-align: right;
         }
-        
-        .renewal-notice {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-            padding: 10px 15px;
-            border-radius: 5px;
-            margin-top: 15px;
-            text-align: center;
-            font-size: 0.9rem;
-        }
     </style>
 </head>
 <body>
@@ -446,12 +532,10 @@
     </nav>
 
     <div class="container">
-        <div class="offer-banner" id="offer-banner">
-            <h2 id="offer-title">🎉 عرض خاص لمدة 72 ساعة فقط! 🎉</h2>
-            <div class="countdown-timer" id="countdown">ينتهي خلال: 72:00:00</div>
-            <p id="offer-description">خصم خاص على الكتاب الأكثر مبيعاً</p>
-            <div class="renewal-notice" id="renewal-notice" style="display: none;">
-                سيبدأ عرض جديد بعد: <span id="next-offer-timer"></span>
+        <!-- Offer Banner - Will be populated by JavaScript -->
+        <div id="offer-banner-container">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner"></i> جاري تحميل العروض...
             </div>
         </div>
 
@@ -509,7 +593,136 @@
 
     <script>
         // Database functions
-        async function loadProducts() {
+        async function loadActiveOffer() {
+            try {
+                const now = new Date().toISOString();
+                
+                // Get active offer (current time between start_time and end_time)
+                const { data: offers, error } = await supabase
+                    .from('offers')
+                    .select('*')
+                    .eq('is_active', true)
+                    .lte('start_time', now)
+                    .gte('end_time', now)
+                    .order('created_at', { ascending: false })
+                    .limit(1);
+
+                if (error) throw error;
+
+                const container = document.getElementById('offer-banner-container');
+                
+                if (!offers || offers.length === 0) {
+                    // No active offer
+                    container.innerHTML = `
+                        <div class="no-offer-message">
+                            <h3>🎁 لا توجد عروض حالياً</h3>
+                            <p>تابعنا للاطلاع على أحدث العروض والتخفيضات</p>
+                        </div>
+                    `;
+                    return null;
+                }
+
+                const offer = offers[0];
+                renderOfferBanner(offer);
+                return offer;
+
+            } catch (error) {
+                console.error('Error loading offer:', error);
+                const container = document.getElementById('offer-banner-container');
+                container.innerHTML = '<div class="error-message">حدث خطأ في تحميل العروض. يرجى المحاولة مرة أخرى.</div>';
+                return null;
+            }
+        }
+
+        function renderOfferBanner(offer) {
+            const container = document.getElementById('offer-banner-container');
+            const backgroundColor = offer.background_color || '#ff6b6b';
+            const textColor = offer.text_color || '#ffffff';
+            
+            container.innerHTML = `
+                <div class="offer-banner" style="background: linear-gradient(135deg, ${backgroundColor}, ${adjustColor(backgroundColor, -20)}); color: ${textColor};">
+                    <div class="offer-banner-content">
+                        <h2 class="offer-title">${offer.title}</h2>
+                        <p class="offer-description">${offer.description}</p>
+                        ${offer.discount_percentage ? `<div class="offer-discount">خصم ${offer.discount_percentage}%</div>` : ''}
+                        <div class="countdown-timer" id="countdown">ينتهي خلال: ${formatTimeRemaining(offer.end_time)}</div>
+                        <div class="renewal-notice" id="renewal-notice" style="display: none;">
+                            سيبدأ عرض جديد بعد: <span id="next-offer-timer"></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Start countdown for this specific offer
+            startOfferCountdown(offer);
+        }
+
+        function adjustColor(color, amount) {
+            // Simple color adjustment for gradient
+            return color; // In a real implementation, you'd adjust the color
+        }
+
+        function formatTimeRemaining(endTime) {
+            const end = new Date(endTime);
+            const now = new Date();
+            const diff = end - now;
+            
+            if (diff <= 0) return '00:00:00';
+            
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function startOfferCountdown(offer) {
+            const countdownElement = document.getElementById("countdown");
+            const offerBanner = document.querySelector('.offer-banner');
+            const renewalNotice = document.getElementById("renewal-notice");
+            const nextOfferTimer = document.getElementById("next-offer-timer");
+
+            function updateTimer() {
+                const now = new Date();
+                const endTime = new Date(offer.end_time);
+                const timeLeft = endTime - now;
+
+                if (timeLeft <= 0) {
+                    // Offer ended
+                    countdownElement.textContent = "انتهى العرض!";
+                    offerBanner.classList.add('inactive');
+                    renewalNotice.style.display = "block";
+                    
+                    // Check for new offers every minute after current offer ends
+                    setTimeout(() => {
+                        loadActiveOffer().then(newOffer => {
+                            if (newOffer) {
+                                loadProducts(newOffer);
+                            }
+                        });
+                    }, 60000); // Check after 1 minute
+                    
+                } else {
+                    // Update countdown
+                    const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                    
+                    countdownElement.textContent = `ينتهي خلال: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }
+
+            // Initialize and update timer every second
+            updateTimer();
+            const timerInterval = setInterval(updateTimer, 1000);
+            
+            // Clear interval when offer ends
+            setTimeout(() => {
+                clearInterval(timerInterval);
+            }, new Date(offer.end_time) - new Date() + 1000);
+        }
+
+        async function loadProducts(activeOffer = null) {
             try {
                 // Show loading state
                 document.getElementById('special-offers-grid').innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner"></i> جاري تحميل العروض الخاصة...</div>';
@@ -533,26 +746,39 @@
                     return;
                 }
 
-                // Filter products by category
-                const specialOffers = products.filter(product => product.category === 'special_offer');
+                // Filter products based on active offer
+                let specialOffers = [];
+                if (activeOffer && activeOffer.products) {
+                    // Show products from the active offer
+                    const offerProductIds = activeOffer.products;
+                    specialOffers = products.filter(product => 
+                        offerProductIds.includes(product.id)
+                    );
+                } else {
+                    // Fallback: show products with category 'special_offer' or with discounts
+                    specialOffers = products.filter(product => 
+                        product.category === 'special_offer' || 
+                        (product.old_price && product.current_price && product.old_price > product.current_price)
+                    );
+                }
+
                 const books = products.filter(product => product.category === 'book');
                 const otherProducts = products.filter(product => product.category === 'product');
 
                 // Render products in respective sections
-                renderProducts(specialOffers, 'special-offers-grid');
+                renderProducts(specialOffers, 'special-offers-grid', activeOffer);
                 renderProducts(books, 'books-grid');
                 renderProducts(otherProducts, 'products-grid');
 
             } catch (error) {
                 console.error('Error loading products:', error);
-                // Show error message
                 document.getElementById('special-offers-grid').innerHTML = '<div class="error-message">حدث خطأ في تحميل العروض الخاصة. يرجى المحاولة مرة أخرى.</div>';
                 document.getElementById('books-grid').innerHTML = '<div class="error-message">حدث خطأ في تحميل الكتب. يرجى المحاولة مرة أخرى.</div>';
                 document.getElementById('products-grid').innerHTML = '<div class="error-message">حدث خطأ في تحميل المنتجات. يرجى المحاولة مرة أخرى.</div>';
             }
         }
 
-        function renderProducts(products, containerId) {
+        function renderProducts(products, containerId, activeOffer = null) {
             const container = document.getElementById(containerId);
             if (!container) return;
 
@@ -567,14 +793,22 @@
 
             // Create product cards
             products.forEach(product => {
-                const productCard = createProductCard(product);
+                const productCard = createProductCard(product, containerId, activeOffer);
                 container.appendChild(productCard);
             });
         }
 
-        function createProductCard(product) {
+        function createProductCard(product, containerId, activeOffer = null) {
             const card = document.createElement('div');
             card.className = 'product-card';
+
+            // Add offer tag for products in home section
+            if (containerId === 'special-offers-grid') {
+                const offerTag = document.createElement('div');
+                offerTag.className = 'offer-tag';
+                offerTag.textContent = 'عرض خاص';
+                card.appendChild(offerTag);
+            }
 
             // Add ribbon if product has one
             if (product.ribbon) {
@@ -590,7 +824,7 @@
             img.alt = product.name;
             img.className = 'product-image';
             img.onerror = function() {
-                this.src = 'images/placeholder.jpg'; // Fallback image if original fails to load
+                this.src = 'images/placeholder.jpg';
             };
             card.appendChild(img);
 
@@ -614,20 +848,36 @@
             const priceDiv = document.createElement('div');
             priceDiv.className = 'product-price';
 
+            // Apply offer discount if available
+            let displayPrice = product.current_price;
+            if (activeOffer && activeOffer.discount_percentage && activeOffer.products.includes(product.id)) {
+                const discount = activeOffer.discount_percentage;
+                displayPrice = product.current_price * (1 - discount / 100);
+                
+                const originalPrice = document.createElement('span');
+                originalPrice.className = 'old-price';
+                originalPrice.textContent = `${product.current_price} أوقية`;
+                priceDiv.appendChild(originalPrice);
+
+                const discountBadge = document.createElement('span');
+                discountBadge.className = 'discount-badge';
+                discountBadge.textContent = `خصم ${discount}%`;
+                priceDiv.appendChild(discountBadge);
+            }
+
             // Current price
             const currentPrice = document.createElement('span');
             currentPrice.className = 'current-price';
-            currentPrice.textContent = `${product.current_price} أوقية`;
+            currentPrice.textContent = `${Math.round(displayPrice)} أوقية`;
             priceDiv.appendChild(currentPrice);
 
-            // Old price and discount badge if applicable
-            if (product.old_price && product.old_price > product.current_price) {
+            // Show original discount if no active offer
+            if (!activeOffer && product.old_price && product.old_price > product.current_price) {
                 const oldPrice = document.createElement('span');
                 oldPrice.className = 'old-price';
                 oldPrice.textContent = `${product.old_price} أوقية`;
                 priceDiv.appendChild(oldPrice);
 
-                // Calculate discount percentage
                 const discount = Math.round(((product.old_price - product.current_price) / product.old_price) * 100);
                 const discountBadge = document.createElement('span');
                 discountBadge.className = 'discount-badge';
@@ -639,139 +889,43 @@
 
             // Buy button
             const buyBtn = document.createElement('a');
-            buyBtn.href = `purchase.html?product=${product.id}&price=${product.current_price}`;
+            const finalPrice = activeOffer && activeOffer.products.includes(product.id) ? 
+                Math.round(product.current_price * (1 - (activeOffer.discount_percentage || 0) / 100)) : 
+                product.current_price;
+                
+            buyBtn.href = `purchase.html?product=${product.id}&price=${finalPrice}&offer=${activeOffer ? activeOffer.id : ''}`;
             buyBtn.className = 'buy-btn';
             buyBtn.textContent = 'شراء الآن';
+            
             info.appendChild(buyBtn);
-
             card.appendChild(info);
             return card;
         }
 
         // Navigation functions
         function showSection(sectionId) {
-            // Hide all sections
             document.querySelectorAll('.section').forEach(section => {
                 section.style.display = 'none';
             });
-            
-            // Show the selected section
             document.getElementById(sectionId).style.display = 'block';
             
-            // Update active menu item
             document.querySelectorAll('.navbar .menu a').forEach(link => {
                 link.classList.remove('active');
             });
             
-            // Set the clicked link as active
             const activeLink = document.querySelector(`.navbar .menu a[href="#${sectionId}"]`);
             if (activeLink) {
                 activeLink.classList.add('active');
             }
         }
 
-        // Countdown timer function
-        function startCountdown() {
-            const offerDuration = 72 * 60 * 60; // 72 hours in seconds
-            const breakDuration = 24 * 60 * 60; // 24 hours break between offers
-            
-            const countdownElement = document.getElementById("countdown");
-            const offerBanner = document.getElementById("offer-banner");
-            const offerTitle = document.getElementById("offer-title");
-            const offerDescription = document.getElementById("offer-description");
-            const renewalNotice = document.getElementById("renewal-notice");
-            const nextOfferTimer = document.getElementById("next-offer-timer");
-            
-            // Check if we have stored offer data
-            const storedOfferData = localStorage.getItem('offerData');
-            let offerData;
-            
-            if (storedOfferData) {
-                offerData = JSON.parse(storedOfferData);
-                
-                // Check if offer has expired
-                const now = Math.floor(Date.now() / 1000);
-                const timeSinceOfferEnd = now - offerData.offerEndTime;
-                
-                if (timeSinceOfferEnd > breakDuration) {
-                    // Create a new offer
-                    offerData = {
-                        offerEndTime: Math.floor(Date.now() / 1000) + offerDuration,
-                        isActive: true
-                    };
-                }
-            } else {
-                // Create initial offer data
-                offerData = {
-                    offerEndTime: Math.floor(Date.now() / 1000) + offerDuration,
-                    isActive: true
-                };
-            }
-            
-            // Save to localStorage
-            localStorage.setItem('offerData', JSON.stringify(offerData));
-            
-            function updateTimer() {
-                const now = Math.floor(Date.now() / 1000);
-                const timeLeft = offerData.offerEndTime - now;
-                
-                if (timeLeft <= 0 && offerData.isActive) {
-                    // Offer just ended
-                    offerData.isActive = false;
-                    offerData.offerEndTime = now + breakDuration;
-                    localStorage.setItem('offerData', JSON.stringify(offerData));
-                    
-                    // Update UI for inactive offer
-                    offerBanner.classList.add('inactive');
-                    offerTitle.textContent = "🎉 انتهى العرض! 🎉";
-                    offerDescription.textContent = "شكراً لاهتمامكم، سيبدأ عرض جديد قريباً";
-                    renewalNotice.style.display = "block";
-                    
-                } else if (timeLeft <= 0 && !offerData.isActive) {
-                    // Countdown to next offer
-                    const timeUntilNextOffer = offerData.offerEndTime - now;
-                    
-                    if (timeUntilNextOffer <= 0) {
-                        // Start new offer
-                        offerData.isActive = true;
-                        offerData.offerEndTime = now + offerDuration;
-                        localStorage.setItem('offerData', JSON.stringify(offerData));
-                        
-                        // Update UI for active offer
-                        offerBanner.classList.remove('inactive');
-                        offerTitle.textContent = "🎉 عرض خاص لمدة 72 ساعة فقط! 🎉";
-                        offerDescription.textContent = "خصم خاص على الكتاب الأكثر مبيعاً";
-                        renewalNotice.style.display = "none";
-                    } else {
-                        // Show countdown to next offer
-                        const hours = Math.floor(timeUntilNextOffer / 3600);
-                        const minutes = Math.floor((timeUntilNextOffer % 3600) / 60);
-                        const seconds = timeUntilNextOffer % 60;
-                        
-                        nextOfferTimer.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                    }
-                } else if (offerData.isActive) {
-                    // Show countdown for active offer
-                    const hours = Math.floor(timeLeft / 3600);
-                    const minutes = Math.floor((timeLeft % 3600) / 60);
-                    const seconds = timeLeft % 60;
-                    
-                    countdownElement.textContent = `ينتهي خلال: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                }
-            }
-            
-            // Initialize and update timer every second
-            updateTimer();
-            setInterval(updateTimer, 1000);
-        }
-
         // Initialize the page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Load products from database
-            loadProducts();
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Load active offer first
+            const activeOffer = await loadActiveOffer();
             
-            // Start countdown timer
-            startCountdown();
+            // Load products (will use the active offer if available)
+            loadProducts(activeOffer);
             
             // Show home section by default
             showSection('home');
@@ -779,16 +933,11 @@
             // Set up navigation
             document.querySelectorAll('.navbar .menu a').forEach(link => {
                 link.addEventListener('click', function(e) {
-                    // Handle external links
-                    if (this.getAttribute('href').startsWith('http')) {
-                        return; // Allow default behavior for external links
-                    }
+                    if (this.getAttribute('href').startsWith('http')) return;
                     
                     e.preventDefault();
                     const targetSection = this.getAttribute('href').substring(1);
                     showSection(targetSection);
-                    
-                    // Close mobile menu if open
                     document.querySelector('.navbar .menu').classList.remove('show');
                 });
             });
@@ -797,21 +946,7 @@
             document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
                 document.querySelector('.navbar .menu').classList.toggle('show');
             });
-            
-            // Handle referral codes
-            const urlParams = new URLSearchParams(window.location.search);
-            const ref = urlParams.get('ref');
-            if (ref) {
-                localStorage.setItem('referralCode', ref);
-            }
         });
-
-        // Reset countdown (for testing purposes)
-        function resetCountdown() {
-            localStorage.removeItem('offerData');
-            startCountdown();
-            alert("تم إعادة تعيين العد التنازلي للعرض!");
-        }
     </script>
 </body>
 </html>
